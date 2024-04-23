@@ -8,7 +8,7 @@ import userRoute from "./routes/user.route.mjs"
 import futsalRoute from "./routes/futsal.route.mjs"
 
 const app  = express()
-const port = 3000;
+const port = 3000 || process.env.PORT;
 const hostname = "http://localhost:";
 
 const mongoUrl = process.env.MONGODB_URI
