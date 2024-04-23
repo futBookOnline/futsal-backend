@@ -1,6 +1,6 @@
 import User from "../models/user.model.mjs";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+// import nodemailer from "nodemailer";
 
 // Handle Errors
 const handleErrors = (err) => {
@@ -52,28 +52,28 @@ const addUserPostRequest = async (req, res) => {
 };
 
 // Send Email Verification
-const sendEmailVerification = async (email, id) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+// const sendEmailVerification = async (email, id) => {
+//   const transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     auth: {
+//       user: process.env.EMAIL,
+//       pass: process.env.PASSWORD,
+//     },
+//   });
 
-  const mailOptions = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: "Futsal Finder: Verify your email",
-    text: `http://localhost:3000/users/:${id}`,
-  };
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log("Email Sent")
-  } catch (error) {
-   console.log("FAILED: ", error.message) 
-  }
-};
+//   const mailOptions = {
+//     from: process.env.EMAIL,
+//     to: email,
+//     subject: "Futsal Finder: Verify your email",
+//     text: `http://localhost:3000/users/:${id}`,
+//   };
+//   try {
+//     await transporter.sendMail(mailOptions);
+//     console.log("Email Sent")
+//   } catch (error) {
+//    console.log("FAILED: ", error.message) 
+//   }
+// };
 
 // PUT API: Activate Email
 const activateEmailPostRequest = async (req, res) => {
