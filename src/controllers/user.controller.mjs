@@ -42,12 +42,10 @@ const addUserPostRequest = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.create({ email, password });
-    res
-      .status(201)
-      .json({ message: "User registration successful", user: user });
+    res.status(201).json({ data: user }, { error: null });
   } catch (error) {
     const errors = handleErrors(error);
-    res.status(400).json({ errors });
+    res.status(400).json({ data: null }, { error: errors });
   }
 };
 
@@ -69,9 +67,9 @@ const sendEmailVerification = async (email, id) => {
   };
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email Sent")
+    console.log("Email Sent");
   } catch (error) {
-   console.log("FAILED: ", error.message) 
+    console.log("FAILED: ", error.message);
   }
 };
 
