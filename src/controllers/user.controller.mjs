@@ -69,7 +69,7 @@ const addUserPostRequest = async (req, res) => {
 //     await transporter.sendMail(mailOptions);
 //     console.log("Email Sent")
 //   } catch (error) {
-//    console.log("FAILED: ", error.message) 
+//    console.log("FAILED: ", error.message)
 //   }
 // };
 
@@ -98,9 +98,9 @@ const loginUserPostRequest = async (req, res) => {
     const user = await User.login(email, password);
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(200).json({ message: "Login successful", id: user._id });
+    res.status(200).json({ data: user }, { error: null });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ data: null }, { error: error.message });
   }
 };
 
