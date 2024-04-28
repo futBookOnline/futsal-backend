@@ -9,6 +9,7 @@ import {
   logoutUser,
   activateEmail,
   resetPassword,
+  changePassword
 } from "../controllers/user.controller.mjs";
 
 router.get("/", listUsers);
@@ -18,5 +19,6 @@ router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 router.put("/:id", activateEmail)
 router.post("/reset-password", resetPassword)
+router.post("/change-password", changePassword)
 
 export default router;

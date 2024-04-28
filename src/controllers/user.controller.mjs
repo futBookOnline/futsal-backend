@@ -41,7 +41,7 @@ const listUsers = async (req, res) => {
 
 // GET API: Fetch One User By Id
 const getUser = async (req, res) => {
-  const id  = req.params.id;
+  const id = req.params.id;
   try {
     const user = await User.findById(id);
     user
@@ -121,16 +121,39 @@ const loginUser = async (req, res) => {
 
 // POST API: Reset Password
 const resetPassword = async (req, res) => {
-  const {email, password} = req.body
+  const { email, password } = req.body;
   try {
-    const hashedPassword = await User.hashPassword(password)
-    const user = await User.findOneAndUpdate({email: email}, {password: hashedPassword}, {new: true})
-    user ? res.status(200).json({data: user, error: null}) : res.status(404).json({data: null, error: "User Not Found"})
+    const hashedPassword = await User.hashPassword(password);
+    const user = await User.findOneAndUpdate(
+      { email: email },
+      { password: hashedPassword },
+      { new: true }
+    );
+    user
+      ? res.status(200).json({ data: user, error: null })
+      : res.status(404).json({ data: null, error: "User Not Found" });
   } catch (error) {
-    res.status(400).json({data: null, error: error.message})
+    res.status(400).json({ data: null, error: error.message });
   }
-   
-}
+};
+
+// POST API: Change Password
+const changePassword = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const hashedPassword = await User.hashPassword(password);
+    const user = await User.findOneAndUpdate(
+      { email: email },
+      { password: hashedPassword },
+      { new: true }
+    );
+    user
+      ? res.status(200).json({ data: user, error: null })
+      : res.status(404).json({ data: null, error: "User Not Found" });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
 
 // GET API: Logout User
 const logoutUser = (req, res) => {
@@ -145,5 +168,6 @@ export {
   loginUser,
   logoutUser,
   activateEmail,
-  resetPassword
+  resetPassword,
+  changePassword
 };
