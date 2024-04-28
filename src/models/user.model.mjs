@@ -54,5 +54,12 @@ userSchema.statics.login = async function (email, password) {
   throw Error("Invalid Login Credentials");
 };
 
+// password hashing function
+userSchema.statics.hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt()
+  const result = await bcrypt.hash(password, salt)
+  return result
+}
+
 const User = mongoose.model("User", userSchema);
 export default User;

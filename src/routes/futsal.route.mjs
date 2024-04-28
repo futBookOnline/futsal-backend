@@ -1,11 +1,11 @@
 import express from "express"
 const router = express.Router()
 
-import {fetchAllFutsalsGetRequest, fetchFutsalGetRequest, addFutsalPostRequest, findNearByFutsalGetRequest} from "../controllers/futsal.controller.mjs"
+import {listFutsals, getFutsal, addFutsal, listNearbyFutsals} from "../controllers/futsal.controller.mjs"
 
-router.get("/", fetchAllFutsalsGetRequest)
-router.get("/location", findNearByFutsalGetRequest)
-router.get("/:id", fetchFutsalGetRequest)
-router.post("/add", addFutsalPostRequest)
+router.get("/", listFutsals)
+router.get("/location", listNearbyFutsals)
+router.get("/:id", getFutsal)
+router.post("/add", addFutsal)
 
 export default router

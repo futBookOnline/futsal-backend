@@ -2,17 +2,21 @@ import express from "express";
 const router = express.Router();
 
 import {
-  fetchAllUsersGetRequest,
-  addUserPostRequest,
-  loginUserPostRequest,
-  logOutUserGetRequest,
-  activateEmailPostRequest,
+  listUsers,
+  getUser,
+  addUser,
+  loginUser,
+  logoutUser,
+  activateEmail,
+  resetPassword,
 } from "../controllers/user.controller.mjs";
 
-router.get("/", fetchAllUsersGetRequest);
-router.post("/register", addUserPostRequest);
-router.post("/login", loginUserPostRequest);
-router.get("/logout", logOutUserGetRequest);
-router.put("/:id", activateEmailPostRequest)
+router.get("/", listUsers);
+router.get("/:id", getUser)
+router.post("/register", addUser);
+router.post("/login", loginUser);
+router.get("/logout", logoutUser);
+router.put("/:id", activateEmail)
+router.post("/reset-password", resetPassword)
 
 export default router;
