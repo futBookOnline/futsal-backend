@@ -1,0 +1,21 @@
+name: Running Deployment Pipeline
+run-name: ${{github.actor}} in ${{github.ref}}
+on:
+    push:
+    workflow_dispatch:
+jobs:
+    deploying:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+            - name: Install Dependencies
+              run: npm install
+            - name: Build Application
+              run: npm run build
+            - name: Check Build Status
+              if: ${{ success() }}
+              run: echo "Build successful"
+            - name: Display Build Failure Cause
+              if: ${{ failure() }}
+              run: echo "Build failed due to ${{ job.status }}"
