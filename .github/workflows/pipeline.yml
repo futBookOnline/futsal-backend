@@ -11,11 +11,3 @@ jobs:
               uses: actions/checkout@v4
             - name: Install Dependencies
               run: npm install
-            - name: Build Application
-              run: npm run build
-            - name: Check Build Status
-              if: ${{ success() }}
-              run: echo "Build successful"
-            - name: Display Build Failure Cause
-              if: ${{ failure() }}
-              run: echo "Build failed due to ${{ job.status }}"
