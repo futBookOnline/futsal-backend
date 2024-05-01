@@ -1,4 +1,5 @@
 import Futsal from "../models/futsal.model.mjs";
+import paginatedResult from "../utilities/pagination.mjs";
 
 // GET API: Fetch all futsals
 const listFutsals = async (req, res) => {
@@ -14,15 +15,29 @@ const listFutsals = async (req, res) => {
   }
 };
 
+// GET API: Fetch All Futsals With Pagination
+const listPaginatedFutsals = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  try {
+    const futsals = await paginatedResult(Futsal, page, limit);
+    futsals
+      ? res.status(200).json({ data: futsals, error: null })
+      : res.status(404).json({ data: null, error: "Futsal List is empty" });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
+
 // GET API: Fetch One Futsal By Id
 const getFutsal = async (req, res) => {
   try {
     const futsal = await Futsal.findById(req.params.id);
     futsal
-      ? res.status(200).json({ data: futsal, error: null})
-      : res.status(404).json({data: null, error: "Futsal Not Found" });
+      ? res.status(200).json({ data: futsal, error: null })
+      : res.status(404).json({ data: null, error: "Futsal Not Found" });
   } catch (error) {
-    res.status(400).json({data: null, error: error.message });
+    res.status(400).json({ data: null, error: error.message });
   }
 };
 
@@ -72,4 +87,5 @@ export {
   getFutsal,
   addFutsal,
   listNearbyFutsals,
+  listPaginatedFutsals,
 };
