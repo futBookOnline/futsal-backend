@@ -27,6 +27,18 @@ const addFutsalOwner = async (req, res) => {
   }
 };
 
+// Login Futsal Owner
+const loginFutsalOwner = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const futsalOwner = await FutsalOwner.login(email, password);
+    const { password: hashedPassword, ...rest } = futsalOwner._doc;
+    res.status(200).json({ data: rest, error: null });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
+
 // Delete Futsal Owner
 const deleteFutsalOwner = async (req, res) => {
   const { id } = req.params;
@@ -44,4 +56,4 @@ const deleteFutsalOwner = async (req, res) => {
   }
 };
 
-export { listFutsalOwners, addFutsalOwner, deleteFutsalOwner };
+export { listFutsalOwners, addFutsalOwner, loginFutsalOwner, deleteFutsalOwner };
