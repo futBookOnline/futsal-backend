@@ -1,8 +1,7 @@
 import pkg from "validator";
 import mongoose from "mongoose";
 const { isEmail } = pkg;
-import { hashPassword } from "../utils/auth.utils.mjs";
-import bcrypt from "bcrypt"
+import { hashPassword, comparePassword } from "../utils/auth.utils.mjs";
 
 const futsalOwnerSchema = mongoose.Schema(
   {
@@ -37,7 +36,7 @@ futsalOwnerSchema.statics.login = async function (email, password) {
   const futsalOwner = await this.findOne({ email });
   if (!futsalOwner) throw Error("Email does not exist");
   if (!futsalOwner.isActive) throw Error("Email is inactive");
-  const checkPassword = await bcrypt.compare(password, futsalOwner.password);
+  const checkPassword = await comparePassword(password, futsalOwner.password);
   if (!checkPassword) throw Error("Invalid login credentials");
   return futsalOwner;
 };

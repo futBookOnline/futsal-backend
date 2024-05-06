@@ -4,7 +4,7 @@ import { createToken } from "../utils/auth.utils.mjs";
 // List All Futsal Owners
 const listFutsalOwners = async (req, res) => {
   try {
-    const futsalOwners = await FutsalOwner.find();
+    const futsalOwners = await FutsalOwner.find().select("-password");
     futsalOwners
       ? res.status(200).json({ data: futsalOwners, error: null })
       : res.status(404).json({ data: null, error: "Empty Futsal Owners List" });
@@ -85,10 +85,17 @@ const deleteFutsalOwner = async (req, res) => {
   }
 };
 
+// Logout Futsal Owner
+const logoutFutsalOwner = async (req, res) => {
+  res.cookie("jwt-login-owner", "", { maxAge: 1 });
+  res.status(200).json({ data: "Logged out successfully.", error: null });
+};
+
 export {
   listFutsalOwners,
   addFutsalOwner,
   loginFutsalOwner,
   activateEmail,
   deleteFutsalOwner,
+  logoutFutsalOwner,
 };

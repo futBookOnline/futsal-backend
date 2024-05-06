@@ -1,7 +1,9 @@
-import User from "../models/user.model.mjs";
-import jwt from "jsonwebtoken";
-import FutsalOwner from "../models/futsal.owner.model.mjs";
-// import nodemailer from "nodemailer";
+import FutsalUser from "../models/futsal.user.model.mjs";
+import {
+  createToken,
+  hashPassword,
+  comparePassword,
+} from "../utils/auth.utils.mjs";
 
 // Handle Errors
 const handleErrors = (err) => {
@@ -18,23 +20,17 @@ const handleErrors = (err) => {
   return errors;
 };
 
-// Create JWT Token
-// const maxAge = 3 * 24 * 60 * 60;
-// const createToken = (id) => {
-//   return jwt.sign({ id }, "futsal booking secret", { expiresIn: maxAge });
-// };
-
 // GET API: Fetch All Users
 const listUsers = async (req, res) => {
   try {
-    const users = await User.find();
-    users.length > 0
-      ? res.status(200).json({ data: users, error: null })
+    const futsalUsers = await FutsalUser.find().select("-password");
+    futsalUsers
+      ? res.status(200).json({ data: futsalUsers, error: null })
       : res.status(404).json({ data: null, error: "No users available." });
   } catch (error) {
     res.status(400).json({
       data: null,
-      error: "Connection with server failed: Could not fetch users",
+      error: error.message,
     });
   }
 };
@@ -43,7 +39,7 @@ const listUsers = async (req, res) => {
 const getUser = async (req, res) => {
   const id = req.params.id;
   try {
-    const user = await User.findById(id);
+    const user = await FutsalUser.findById(id).select("-password");
     user
       ? res.status(200).json({ data: user, error: null })
       : res.status(404).json({ data: null, error: "User Not Found" });
@@ -54,10 +50,17 @@ const getUser = async (req, res) => {
 
 // POST API: Register User
 const addUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { fullName, email, password } = req.body;
+  console.log(fullName, email, password)
   try {
-    const futsalOwner = await FutsalOwner.create({ email, password });
-    res.status(201).json({ data: futsalOwner, error: null });
+    // const user = await FutsalUser.create({ fullName, email, password });
+    const user = await FutsalUser.register(fullName, email, password);
+    // if (!user)
+    //   return res
+    //     .status(400)
+    //     .json({ data: null, error: "Could not register new user" });
+    const { password: hashedPassword, ...rest } = user._doc;
+    res.status(201).json({ data: rest, error: null });
   } catch (error) {
     const errors = handleErrors(error);
     res.status(400).json({ data: null, error: errors });
@@ -92,11 +95,11 @@ const addUser = async (req, res) => {
 const activateEmail = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findByIdAndUpdate(
+    const user = await FutsalUser.findByIdAndUpdate(
       id,
       { isActive: true },
       { new: true }
-    );
+    ).select("-password");
     if (!user) {
       res.status(404).json({ data: null, error: "User not found." });
     }
@@ -110,11 +113,15 @@ const activateEmail = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.login(email, password);
+    const user = await FutsalUser.login(email, password);
     const token = createToken(user._id);
-    const{password: hashedPassword, ...rest} = user._doc
+    const maxAge = 3 * 24 * 60 * 60;
+    const { password: hashedPassword, ...rest } = user._doc;
     res
-      .cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
+      .cookie("jwt-login-user", token, {
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+      })
       .status(200)
       .json({ data: rest, error: null });
   } catch (error) {
@@ -126,15 +133,18 @@ const loginUser = async (req, res) => {
 const resetPassword = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const hashedPassword = await User.hashPassword(password);
-    const user = await User.findOneAndUpdate(
+    const hashedPassword = await hashPassword(password);
+    const user = await FutsalUser.findOneAndUpdate(
       { email: email },
       { password: hashedPassword },
       { new: true }
     );
-    user
-      ? res.status(200).json({ data: user, error: null })
-      : res.status(404).json({ data: null, error: "User Not Found" });
+    if (!user)
+      return res
+        .status(404)
+        .json({ data: null, error: "Password reset failed" });
+    const { password: hashed, ...rest } = user._doc;
+    res.status(200).json({ data: rest, error: null });
   } catch (error) {
     res.status(400).json({ data: null, error: error.message });
   }
@@ -144,15 +154,16 @@ const resetPassword = async (req, res) => {
 const changePassword = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const hashedPassword = await User.hashPassword(password);
-    const user = await User.findOneAndUpdate(
+    const hashedPassword = await hashPassword(password);
+    const user = await FutsalUser.findOneAndUpdate(
       { email: email },
       { password: hashedPassword },
       { new: true }
     );
-    user
-      ? res.status(200).json({ data: user, error: null })
-      : res.status(404).json({ data: null, error: "User Not Found" });
+    if (!user)
+      return res.status(404).json({ data: null, error: "User Not Found" });
+    const { password: hashed, ...rest } = user._doc;
+    res.status(200).json({ data: rest, error: null });
   } catch (error) {
     res.status(400).json({ data: null, error: error.message });
   }
@@ -160,7 +171,7 @@ const changePassword = async (req, res) => {
 
 // GET API: Logout User
 const logoutUser = (req, res) => {
-  res.cookie("jwt", "", { maxAge: 1 });
+  res.cookie("jwt-login-user", "", { maxAge: 1 });
   res.status(200).json({ data: "Logged out successfully.", error: null });
 };
 
