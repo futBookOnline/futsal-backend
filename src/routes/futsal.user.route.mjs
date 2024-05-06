@@ -10,14 +10,14 @@ import {
   activateEmail,
   resetPassword,
   changePassword
-} from "../controllers/user.controller.mjs";
+} from "../controllers/futsal.user.controller.mjs";
 
 router.get("/", listUsers);
+router.get("/logout", logoutUser);
 router.get("/:id", getUser)
 router.post("/register", addUser);
 router.post("/login", loginUser);
-router.get("/logout", logoutUser);
-router.put("/:id", activateEmail)
+router.put("/activate/:id", activateEmail)
 router.post("/reset-password", resetPassword)
 router.post("/change-password", changePassword)
 

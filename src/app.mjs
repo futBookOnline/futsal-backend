@@ -4,8 +4,10 @@ import mongoose from 'mongoose'
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
-import userRoute from "./routes/user.route.mjs"
-import futsalRoute from "./routes/futsal.route.mjs"
+import futsalUserRoute from "./routes/futsal.user.route.mjs"
+import futsalRoute from "./routes/futsal.venue.route.mjs"
+import futsalOwnerRoute from "./routes/futsal.owner.route.mjs"
+import authRoute from "./routes/auth.route.mjs"
 
 const app  = express()
 const port = 3000 || process.env.PORT;
@@ -34,5 +36,7 @@ app.listen(port, () => {
 
 
 // Routes
-app.use("/users/", userRoute)
-app.use("/futsals/", futsalRoute)
+app.use("/players/users", futsalUserRoute)
+app.use("/futsals", futsalRoute)
+app.use("/owners/users", futsalOwnerRoute)
+app.use("/auth/google", authRoute);
