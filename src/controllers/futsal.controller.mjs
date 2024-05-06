@@ -1,5 +1,5 @@
 import Futsal from "../models/futsal.model.mjs";
-import paginatedResult from "../utilities/pagination.mjs";
+import paginatedResult from "../utils/pagination.utils.mjs";
 
 // GET API: Fetch all futsals
 const listFutsals = async (req, res) => {

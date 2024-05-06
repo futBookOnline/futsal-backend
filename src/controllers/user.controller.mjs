@@ -1,6 +1,6 @@
-import Futsal from "../models/futsal.model.mjs";
 import User from "../models/user.model.mjs";
 import jwt from "jsonwebtoken";
+import FutsalOwner from "../models/futsal.owner.model.mjs";
 // import nodemailer from "nodemailer";
 
 // Handle Errors
@@ -19,10 +19,10 @@ const handleErrors = (err) => {
 };
 
 // Create JWT Token
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, "futsal booking secret", { expiresIn: maxAge });
-};
+// const maxAge = 3 * 24 * 60 * 60;
+// const createToken = (id) => {
+//   return jwt.sign({ id }, "futsal booking secret", { expiresIn: maxAge });
+// };
 
 // GET API: Fetch All Users
 const listUsers = async (req, res) => {
@@ -56,8 +56,8 @@ const getUser = async (req, res) => {
 const addUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.create({ email, password });
-    res.status(201).json({ data: user, error: null });
+    const futsalOwner = await FutsalOwner.create({ email, password });
+    res.status(201).json({ data: futsalOwner, error: null });
   } catch (error) {
     const errors = handleErrors(error);
     res.status(400).json({ data: null, error: errors });
@@ -112,8 +112,11 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(200).json({ data: user, error: null });
+    const{password: hashedPassword, ...rest} = user._doc
+    res
+      .cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
+      .status(200)
+      .json({ data: rest, error: null });
   } catch (error) {
     res.status(400).json({ data: null, error: error.message });
   }
@@ -169,5 +172,5 @@ export {
   logoutUser,
   activateEmail,
   resetPassword,
-  changePassword
+  changePassword,
 };
