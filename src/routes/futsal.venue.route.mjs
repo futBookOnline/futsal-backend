@@ -6,7 +6,7 @@ import {
   addFutsal,
   listNearbyFutsals,
   listPaginatedFutsals,
-} from "../controllers/futsal.controller.mjs";
+} from "../controllers/futsal.venue.controller.mjs";
 
 // router.get("/", listFutsals);
 router.get("/", listPaginatedFutsals);

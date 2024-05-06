@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 
 import futsalUserRoute from "./routes/futsal.user.route.mjs"
-import futsalRoute from "./routes/futsal.route.mjs"
+import futsalRoute from "./routes/futsal.venue.route.mjs"
 import futsalOwnerRoute from "./routes/futsal.owner.route.mjs"
 import authRoute from "./routes/auth.route.mjs"
 

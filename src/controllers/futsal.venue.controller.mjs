@@ -1,4 +1,4 @@
-import Futsal from "../models/futsal.model.mjs";
+import Futsal from "../models/futsal.venue.model.mjs";
 import paginatedResult from "../utils/pagination.utils.mjs";
 
 // GET API: Fetch all futsals
