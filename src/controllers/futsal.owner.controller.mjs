@@ -1,4 +1,5 @@
 import FutsalOwner from "../models/futsal.owner.model.mjs";
+import { createToken } from "../utils/auth.utils.mjs";
 
 // List All Futsal Owners
 const listFutsalOwners = async (req, res) => {
@@ -33,6 +34,34 @@ const loginFutsalOwner = async (req, res) => {
   try {
     const futsalOwner = await FutsalOwner.login(email, password);
     const { password: hashedPassword, ...rest } = futsalOwner._doc;
+    const token = createToken(futsalOwner._id);
+    const maxAge = 3 * 24 * 60 * 60;
+    res
+      .cookie("jwt-login-owner", token, {
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+      })
+      .status(200)
+      .json({ data: rest, error: null });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
+
+// Activate Email
+const activateEmail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const futsalOwner = await FutsalOwner.findByIdAndUpdate(
+      id,
+      { isActive: true },
+      { new: true }
+    );
+    if (!futsalOwner)
+      return res
+        .status(404)
+        .json({ data: null, error: "Invalid Id. Could not activate email" });
+    const { password: hashPassword, ...rest } = futsalOwner._doc;
     res.status(200).json({ data: rest, error: null });
   } catch (error) {
     res.status(400).json({ data: null, error: error.message });
@@ -56,4 +85,10 @@ const deleteFutsalOwner = async (req, res) => {
   }
 };
 
-export { listFutsalOwners, addFutsalOwner, loginFutsalOwner, deleteFutsalOwner };
+export {
+  listFutsalOwners,
+  addFutsalOwner,
+  loginFutsalOwner,
+  activateEmail,
+  deleteFutsalOwner,
+};

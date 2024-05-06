@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 const CLIENT_ID = process.env.CLIENT_ID
 const CLIENT_SECRET = process.env.CLIENT_SECRET
 const REDIRECT_URI = process.env.REDIRECT_URI
+const JWT_SECRET = process.env.JWT_SECRET
 
 // Create OAuth2 client
 export const oauth2Client = new google.auth.OAuth2(
@@ -36,7 +37,7 @@ export const getUserInfo = async (accessToken, idToken) => {
 // Create JWT Token
 const maxAge = 3 * 24 * 60 * 60;
 export const createToken = (id) => {
-  return jwt.sign({ id }, "futsal booking secret", { expiresIn: maxAge });
+  return jwt.sign({ id }, JWT_SECRET, { expiresIn: maxAge });
 };
 
 

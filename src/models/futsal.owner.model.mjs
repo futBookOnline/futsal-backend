@@ -2,6 +2,7 @@ import pkg from "validator";
 import mongoose from "mongoose";
 const { isEmail } = pkg;
 import { hashPassword } from "../utils/auth.utils.mjs";
+import bcrypt from "bcrypt"
 
 const futsalOwnerSchema = mongoose.Schema(
   {
@@ -36,9 +37,9 @@ futsalOwnerSchema.statics.login = async function (email, password) {
   const futsalOwner = await this.findOne({ email });
   if (!futsalOwner) throw Error("Email does not exist");
   if (!futsalOwner.isActive) throw Error("Email is inactive");
-  const user = await bcrypt.compare(password, futsalOwner.password);
-  if (!user) throw Error("Invalid login credentials");
-  return user;
+  const checkPassword = await bcrypt.compare(password, futsalOwner.password);
+  if (!checkPassword) throw Error("Invalid login credentials");
+  return futsalOwner;
 };
 
 // hash a password before doc is saved to db
