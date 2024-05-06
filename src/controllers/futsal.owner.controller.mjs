@@ -1,4 +1,5 @@
 import FutsalOwner from "../models/futsal.owner.model.mjs";
+import Futsal from "../models/futsal.venue.model.mjs";
 import { createToken } from "../utils/auth.utils.mjs";
 
 // List All Futsal Owners
@@ -33,6 +34,11 @@ const loginFutsalOwner = async (req, res) => {
   const { email, password } = req.body;
   try {
     const futsalOwner = await FutsalOwner.login(email, password);
+    const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
+    if (!futsalExists)
+      return res
+        .status(300)
+        .json({ data: null, error: "create futsal profile" });
     const { password: hashedPassword, ...rest } = futsalOwner._doc;
     const token = createToken(futsalOwner._id);
     const maxAge = 3 * 24 * 60 * 60;
