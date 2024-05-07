@@ -34,7 +34,9 @@ const loginFutsalOwner = async (req, res) => {
   const { email, password } = req.body;
   try {
     const futsalOwner = await FutsalOwner.login(email, password);
+    console.log("FUTSAL OWNER: ", futsalOwner)
     const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
+    console.log("FUTSAL EXISTS: ", futsalExists)
     if (!futsalExists)
       return res
         .status(300)
