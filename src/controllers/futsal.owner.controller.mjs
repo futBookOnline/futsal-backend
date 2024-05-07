@@ -1,6 +1,10 @@
 import FutsalOwner from "../models/futsal.owner.model.mjs";
 import Futsal from "../models/futsal.venue.model.mjs";
-import { createToken } from "../utils/auth.utils.mjs";
+import {
+  comparePassword,
+  createToken,
+  hashPassword,
+} from "../utils/auth.utils.mjs";
 
 // List All Futsal Owners
 const listFutsalOwners = async (req, res) => {
@@ -34,23 +38,23 @@ const loginFutsalOwner = async (req, res) => {
   const { email, password } = req.body;
   try {
     const futsalOwner = await FutsalOwner.login(email, password);
-    console.log("FUTSAL OWNER: ", futsalOwner)
-    const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
-    console.log("FUTSAL EXISTS: ", futsalExists)
-    if (!futsalExists)
-      return res
-        .status(300)
-        .json({ data: null, error: "create futsal profile" });
-    const { password: hashedPassword, ...rest } = futsalOwner._doc;
-    const token = createToken(futsalOwner._id);
-    const maxAge = 3 * 24 * 60 * 60;
-    res
-      .cookie("jwt-login-owner", token, {
-        httpOnly: true,
-        maxAge: maxAge * 1000,
-      })
-      .status(200)
-      .json({ data: rest, error: null });
+    if (futsalOwner) {
+      const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
+      if (!futsalExists)
+        return res
+          .status(300)
+          .json({ data: null, error: "create futsal profile" });
+      const { password: hashedPassword, ...rest } = futsalOwner._doc;
+      const token = createToken(futsalOwner._id);
+      const maxAge = 3 * 24 * 60 * 60;
+      res
+        .cookie("jwt-login-owner", token, {
+          httpOnly: true,
+          maxAge: maxAge * 1000,
+        })
+        .status(200)
+        .json({ data: rest, error: null });
+    }
   } catch (error) {
     res.status(400).json({ data: null, error: error.message });
   }
@@ -70,6 +74,38 @@ const activateEmail = async (req, res) => {
         .status(404)
         .json({ data: null, error: "Invalid Id. Could not activate email" });
     const { password: hashPassword, ...rest } = futsalOwner._doc;
+    res.status(200).json({ data: rest, error: null });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
+
+// POST API: Change Password
+const changePassword = async (req, res) => {
+  const { userId, oldPassword, newPassword } = req.body;
+  try {
+    const user = await FutsalOwner.findById(userId);
+    if (!user)
+      return res.status(404).json({ data: null, error: "User not found" });
+    const checkOldPassword = await comparePassword(oldPassword, user.password);
+    if (!checkOldPassword)
+      return res.status(401).json({ data: null, error: "wrong password" });
+    const checkNewPassword = await comparePassword(newPassword, user.password);
+    if (checkNewPassword)
+      return res.status(401).json({
+        data: null,
+        error: "New password and old password cannot be same",
+      });
+    const hashedPassword = await hashPassword(oldPassword);
+    const updatePassword = await FutsalOwner.findByIdAndUpdate(
+      userId,
+      { password: hashedPassword },
+      { new: true }
+    );
+    console.log("UPDATE PASSWORD: ", updatePassword)
+    if (!updatePassword)
+      return res.status(500).json({ data: null, error: "Update Failed" });
+    const { password: hashedPass, ...rest } = updatePassword._doc;
     res.status(200).json({ data: rest, error: null });
   } catch (error) {
     res.status(400).json({ data: null, error: error.message });
@@ -106,4 +142,5 @@ export {
   activateEmail,
   deleteFutsalOwner,
   logoutFutsalOwner,
+  changePassword,
 };
