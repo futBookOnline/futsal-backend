@@ -6,7 +6,8 @@ import {
   addFutsal,
   listNearbyFutsals,
   listPaginatedFutsals,
-  updateFutsal
+  updateFutsal,
+  updateProfileImage
 } from "../controllers/futsal.venue.controller.mjs";
 
 // router.get("/", listFutsals);
@@ -15,5 +16,6 @@ router.get("/location", listNearbyFutsals);
 router.get("/:id", getFutsal);
 router.post("/add", addFutsal);
 router.put("/update/:id", updateFutsal)
+router.post("/upload-image", updateProfileImage)
 
 export default router;
