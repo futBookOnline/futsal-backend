@@ -112,7 +112,6 @@ const changePassword = async (req, res) => {
 };
 
 // Reset Password
-
 const resetPassword = async (req, res) => {
   const { id, password } = req.body;
   try {
