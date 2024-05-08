@@ -111,6 +111,42 @@ const changePassword = async (req, res) => {
   }
 };
 
+// Reset Password
+
+const resetPassword = async (req, res) => {
+  const { id, password } = req.body;
+  try {
+    const user = await FutsalOwner.findById(id);
+    if (!user)
+      return res.status(401).json({ data: null, error: "User not found" });
+    if (!user.isActive)
+      return res.status(401).json({ data: null, error: "User is not active" });
+    const checkOldPassword = await comparePassword(password, user.password);
+    if (checkOldPassword)
+      return res
+        .status(401)
+        .json({
+          data: null,
+          error: "New password cannot be same as old password",
+        });
+
+    const hashedPassword = await hashPassword(password);
+    const updateUser = await FutsalOwner.findByIdAndUpdate(
+      id,
+      { password: hashedPassword },
+      { new: true }
+    );
+    if (!user)
+      return res
+        .status(401)
+        .json({ data: null, error: "Password reset failed" });
+    const { password: hashedPass, ...rest } = updateUser._doc;
+    res.status(200).json({ data: rest, error: null });
+  } catch (error) {
+    res.status(500).json({ data: null, error: error.message });
+  }
+};
+
 // Delete Futsal Owner
 const deleteFutsalOwner = async (req, res) => {
   const { id } = req.params;
@@ -142,4 +178,5 @@ export {
   deleteFutsalOwner,
   logoutFutsalOwner,
   changePassword,
+  resetPassword,
 };
