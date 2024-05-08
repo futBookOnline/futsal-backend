@@ -96,13 +96,12 @@ const changePassword = async (req, res) => {
         data: null,
         error: "New password and old password cannot be same",
       });
-    const hashedPassword = await hashPassword(oldPassword);
+    const hashedPassword = await hashPassword(newPassword);
     const updatePassword = await FutsalOwner.findByIdAndUpdate(
       userId,
       { password: hashedPassword },
       { new: true }
     );
-    console.log("UPDATE PASSWORD: ", updatePassword)
     if (!updatePassword)
       return res.status(500).json({ data: null, error: "Update Failed" });
     const { password: hashedPass, ...rest } = updatePassword._doc;

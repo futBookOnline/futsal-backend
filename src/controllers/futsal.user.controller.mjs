@@ -152,11 +152,11 @@ const resetPassword = async (req, res) => {
 
 // POST API: Change Password
 const changePassword = async (req, res) => {
-  const { email, password } = req.body;
+  const { userId, password } = req.body;
   try {
     const hashedPassword = await hashPassword(password);
-    const user = await FutsalUser.findOneAndUpdate(
-      { email: email },
+    const user = await FutsalUser.findByIdAndUpdate(
+      userId,
       { password: hashedPassword },
       { new: true }
     );
