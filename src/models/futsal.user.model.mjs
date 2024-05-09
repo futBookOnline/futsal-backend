@@ -28,11 +28,24 @@ const futsalUserSchema = mongoose.Schema(
       type: Date,
       default: new Date().toString(),
     },
+    isGoogleUser: {
+      type:Boolean,
+      default: false
+    },
     imageUrl: {
       type: String,
       default:
         "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg",
     },
+    dateOfBirth: {
+      type: Date
+    },
+    contact: {
+      type: Number,
+    },
+    gender: {
+      type: String
+    }
   },
   {
     timestamps: true,

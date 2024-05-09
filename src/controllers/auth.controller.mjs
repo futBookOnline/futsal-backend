@@ -25,33 +25,31 @@ const googleOAuthCallback = async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code);
     const userInfo = await getUserInfo(tokens.access_token, tokens.id_token);
     const result = await isUserInSystem(userInfo);
-
     const maxAge = 3 * 24 * 60 * 60;
     if (result) {
       const token = createToken(result._id);
-      res
+      return res
         .cookie("jwt-login-user", token, {
           httpOnly: true,
           maxAge: maxAge * 1000,
         })
         .status(200)
         .redirect(SUCCESS_REDIRECT_URL);
-    } else {
-      const user = await addGoogleUser(userInfo);
-      if (!user)
-        return res
-          .status(400)
-          .json({ data: null, error: "Could not register user" })
-          .redirect(FAILURE_REDIRECT_URL);
-      const token = createToken(user._id);
-      res
-        .status(201)
-        .cookie("jwt-login-user", token, {
-          httpOnly: true,
-          maxAge: maxAge * 1000,
-        })
-        .redirect(SUCCESS_REDIRECT_URL);
     }
+    const user = await addGoogleUser(userInfo);
+    if (!user)
+      return res
+        .status(400)
+        .json({ data: null, error: "Could not register user" })
+        .redirect(FAILURE_REDIRECT_URL);
+    const token = createToken(user._id);
+    res
+      .status(201)
+      .cookie("jwt-login-user", token, {
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+      })
+      .redirect(SUCCESS_REDIRECT_URL);
   } catch (error) {
     res
       .status(500)
@@ -76,6 +74,7 @@ const addGoogleUser = async (googleUser) => {
       email,
       isActive: true,
       imageUrl: picture,
+      isGoogleUser: true,
     });
     return user || null;
   } catch (error) {

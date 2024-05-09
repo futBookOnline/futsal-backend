@@ -135,10 +135,6 @@ const resetPassword = async (req, res) => {
       { password: hashedPassword },
       { new: true }
     );
-    if (!user)
-      return res
-        .status(401)
-        .json({ data: null, error: "Password reset failed" });
     const { password: hashedPass, ...rest } = updateUser._doc;
     res.status(200).json({ data: rest, error: null });
   } catch (error) {
