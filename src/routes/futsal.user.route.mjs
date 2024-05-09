@@ -10,7 +10,8 @@ import {
   activateEmail,
   resetPassword,
   changePassword,
-  updateUser
+  updateUser,
+  updateProfilePicture
 } from "../controllers/futsal.user.controller.mjs";
 
 router.get("/", listUsers);
@@ -22,5 +23,6 @@ router.put("/activate/:id", activateEmail)
 router.put("/reset-password/:id", resetPassword)
 router.put("/change-password/:id", changePassword)
 router.put("/update/:id", updateUser)
+router.put("/upload-image/:id", updateProfilePicture)
 
 export default router;

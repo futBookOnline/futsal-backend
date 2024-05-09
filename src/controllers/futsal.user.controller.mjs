@@ -215,6 +215,22 @@ const updateUser = async(req, res) => {
 
 
 // PUT API: Update Profile Picture
+const updateProfilePicture = async (req, res) => {
+  const {imageUrl } = req.body;
+  const {id} = req.params
+  try {
+    const user = await FutsalUser.findByIdAndUpdate(
+      id,
+      { imageUrl },
+      { new: true }
+    ).select("-password");
+    if (!user)
+      return res.status(401).json({ data: null, error: "Image Update Failed" });
+    res.status(200).json({ data: user, error: null });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
 
 // GET API: Logout User
 const logoutUser = (req, res) => {
@@ -231,5 +247,6 @@ export {
   activateEmail,
   resetPassword,
   changePassword,
-  updateUser
+  updateUser,
+  updateProfilePicture
 };
