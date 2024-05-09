@@ -16,6 +16,6 @@ router.get("/location", listNearbyFutsals);
 router.get("/:id", getFutsal);
 router.post("/add", addFutsal);
 router.put("/update/:id", updateFutsal)
-router.post("/upload-image", updateProfileImage)
+router.put("/upload-image", updateProfileImage)
 
 export default router;

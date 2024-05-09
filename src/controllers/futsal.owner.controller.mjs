@@ -80,11 +80,12 @@ const activateEmail = async (req, res) => {
   }
 };
 
-// POST API: Change Password
+// PUT API: Change Password
 const changePassword = async (req, res) => {
-  const { userId, oldPassword, newPassword } = req.body;
+  const { id } = req.params;
+  const { oldPassword, newPassword } = req.body;
   try {
-    const user = await FutsalOwner.findById(userId);
+    const user = await FutsalOwner.findById(id);
     if (!user)
       return res.status(404).json({ data: null, error: "User not found" });
     const checkOldPassword = await comparePassword(oldPassword, user.password);
@@ -98,7 +99,7 @@ const changePassword = async (req, res) => {
       });
     const hashedPassword = await hashPassword(newPassword);
     const updatePassword = await FutsalOwner.findByIdAndUpdate(
-      userId,
+      id,
       { password: hashedPassword },
       { new: true }
     );
@@ -111,9 +112,10 @@ const changePassword = async (req, res) => {
   }
 };
 
-// Reset Password
+// PUT API: Reset Password
 const resetPassword = async (req, res) => {
-  const { id, password } = req.body;
+  const { id } = req.params;
+  const { password } = req.body;
   try {
     const user = await FutsalOwner.findById(id);
     if (!user)
@@ -122,12 +124,10 @@ const resetPassword = async (req, res) => {
       return res.status(401).json({ data: null, error: "User is not active" });
     const checkOldPassword = await comparePassword(password, user.password);
     if (checkOldPassword)
-      return res
-        .status(401)
-        .json({
-          data: null,
-          error: "New password cannot be same as old password",
-        });
+      return res.status(401).json({
+        data: null,
+        error: "New password cannot be same as old password",
+      });
 
     const hashedPassword = await hashPassword(password);
     const updateUser = await FutsalOwner.findByIdAndUpdate(
@@ -135,10 +135,6 @@ const resetPassword = async (req, res) => {
       { password: hashedPassword },
       { new: true }
     );
-    if (!user)
-      return res
-        .status(401)
-        .json({ data: null, error: "Password reset failed" });
     const { password: hashedPass, ...rest } = updateUser._doc;
     res.status(200).json({ data: rest, error: null });
   } catch (error) {
