@@ -17,7 +17,7 @@ router.post("/login", loginFutsalOwner);
 router.put("/activate/:id", activateEmail);
 router.delete("/delete/:id", deleteFutsalOwner);
 router.get("/logout", logoutFutsalOwner);
-router.post("/change-password", changePassword)
-router.post("/reset-password", resetPassword)
+router.put("/change-password", changePassword)
+router.put("/reset-password", resetPassword)
 
 export default router;

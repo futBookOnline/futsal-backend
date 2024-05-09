@@ -104,7 +104,8 @@ const updateFutsal = async (req, res) => {
 
 // Update Profile Image
 const updateProfileImage = async (req, res) => {
-  const { id, imageUrl } = req.body;
+  const { id } = req.params;
+  const { imageUrl } = req.body;
   try {
     const futsal = await Futsal.findByIdAndUpdate(
       id,
@@ -126,5 +127,5 @@ export {
   listNearbyFutsals,
   listPaginatedFutsals,
   updateFutsal,
-  updateProfileImage
+  updateProfileImage,
 };
