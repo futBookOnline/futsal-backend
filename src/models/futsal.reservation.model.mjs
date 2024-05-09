@@ -6,6 +6,7 @@ const reservationSchema = mongoose.Schema(
   {
     venueId: {
       type: String,
+      required: [true, "Futsal Id is required"],
     },
     futsalName: {
       type: String,
@@ -37,6 +38,7 @@ const reservationSchema = mongoose.Schema(
     },
     userId: {
       type: String,
+      default: null,
     },
     fullName: {
       type: String,
