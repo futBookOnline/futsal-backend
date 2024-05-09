@@ -8,6 +8,7 @@ import futsalUserRoute from "./routes/futsal.user.route.mjs"
 import futsalRoute from "./routes/futsal.venue.route.mjs"
 import futsalOwnerRoute from "./routes/futsal.owner.route.mjs"
 import authRoute from "./routes/auth.route.mjs"
+import reservationRoute from "./routes/futsal.reservation.route.mjs"
 
 const app  = express()
 const port = 3000 || process.env.PORT;
@@ -40,3 +41,4 @@ app.use("/players/users", futsalUserRoute)
 app.use("/owners/futsals", futsalRoute)
 app.use("/owners/users", futsalOwnerRoute)
 app.use("/auth/google", authRoute);
+app.use("/reservations", reservationRoute)
