@@ -82,10 +82,49 @@ const addFutsal = async (req, res) => {
   }
 };
 
+// Update Futsal Profile
+const updateFutsal = async (req, res) => {
+  const { id } = req.params;
+  const updateFields = req.body;
+  try {
+    const updatedFutsal = await Futsal.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true }
+    );
+    if (!updatedFutsal)
+      return res
+        .status(401)
+        .json({ data: null, error: "Could not update futsal" });
+    res.status(200).json({ data: updatedFutsal, error: null });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
+
+// Update Profile Image
+const updateProfileImage = async (req, res) => {
+  const { id, imageUrl } = req.body;
+  try {
+    const futsal = await Futsal.findByIdAndUpdate(
+      id,
+      { imageUrl },
+      { new: true }
+    );
+    if (!futsal)
+      return res.status(401).json({ data: null, error: "Image Update Failed" });
+    res.status(200).json({ data: futsal, error: null });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
+
 export {
   listFutsals,
   getFutsal,
   addFutsal,
   listNearbyFutsals,
   listPaginatedFutsals,
+  updateFutsal,
+  updateProfileImage
 };
