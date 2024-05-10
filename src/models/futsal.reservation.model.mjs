@@ -62,6 +62,10 @@ const reservationSchema = mongoose.Schema(
       type: String,
       required: [true, "Reservation time is required."],
     },
+    reservationId:{
+      type: String,
+      required: [true, "Reservation ID is required."]
+    }
   },
   {
     timestamps: true,
