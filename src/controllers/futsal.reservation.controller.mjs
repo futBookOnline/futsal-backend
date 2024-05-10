@@ -38,4 +38,20 @@ const addReservation = async (req, res) => {
   }
 };
 
-export { listReservations, getReservation, addReservation };
+// Cancel Reservation
+
+const cancelReservation = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const reservation = await FutsalReservation.findByIdAndDelete(id);
+    reservation
+      ? res.status(200).json({ data: reservation, error: null })
+      : res
+          .status(301)
+          .json({ data: null, error: "Failed cancelling reservation" });
+  } catch (error) {
+    res.status(400).json({ data: null, error: error.message });
+  }
+};
+
+export { listReservations, getReservation, addReservation, cancelReservation };
