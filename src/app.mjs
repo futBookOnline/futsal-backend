@@ -37,8 +37,8 @@ app.listen(port, () => {
 
 
 // Routes
-app.use("/players/users", futsalUserRoute)
-app.use("/owners/futsals", futsalRoute)
-app.use("/owners/users", futsalOwnerRoute)
+app.use("/users", futsalUserRoute)
+app.use("/venues", futsalRoute)
+app.use("/owners", futsalOwnerRoute)
 app.use("/auth/google", authRoute);
 app.use("/reservations", reservationRoute)
