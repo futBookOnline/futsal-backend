@@ -12,7 +12,7 @@ import {
   changePassword,
   updateUser,
   updateProfilePicture
-} from "../controllers/futsal.user.controller.mjs";
+} from "../controllers/user.controller.mjs";
 
 router.get("/", listUsers);
 router.get("/logout", logoutUser);

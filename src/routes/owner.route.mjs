@@ -9,7 +9,7 @@ import {
   logoutFutsalOwner,
   changePassword,
   resetPassword
-} from "../controllers/futsal.owner.controller.mjs";
+} from "../controllers/owner.controller.mjs";
 
 router.get("/", listFutsalOwners);
 router.post("/register", addFutsalOwner);

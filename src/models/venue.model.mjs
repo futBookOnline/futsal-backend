@@ -44,11 +44,29 @@ const futsalSchema = mongoose.Schema(
         "https://firebasestorage.googleapis.com/v0/b/futsal-management-cfe31.appspot.com/o/Assets%2Fa.png?alt=media&token=b7a82288-e014-4a12-872c-1967c994e732",
     },
     opensAt: {
-      type: String,
-      required: [true, "Opening time is required"],
+      hour: {
+        type: Number,
+        required: [true, "Opening hour is required"],
+      },
+      minute: {
+        type: Number,
+        required: [true, "Opening minute is required"],
+      },
     },
-    closesAt: {type: String,
-      required: [true, "Closing time is required"]},
+    closesAt: {
+      hour: {
+        type: Number,
+        required: [true, "Closing hour is required"],
+      },
+      minute: {
+        type: Number,
+        required: [true, "Closing minute is required"],
+      },
+    },
+    price: {
+      type: Number,
+      required: [true, "Price is required"],
+    },
   },
   { timestamps: true }
 );

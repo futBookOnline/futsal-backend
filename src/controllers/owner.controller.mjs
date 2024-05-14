@@ -1,5 +1,5 @@
-import FutsalOwner from "../models/futsal.owner.model.mjs";
-import Futsal from "../models/futsal.venue.model.mjs";
+import FutsalOwner from "../models/owner.model.mjs";
+import Futsal from "../models/venue.model.mjs";
 import {
   comparePassword,
   createToken,

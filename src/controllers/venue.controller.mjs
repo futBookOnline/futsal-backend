@@ -1,4 +1,4 @@
-import Futsal from "../models/futsal.venue.model.mjs";
+import Futsal from "../models/venue.model.mjs";
 import paginatedResult from "../utils/pagination.utils.mjs";
 
 // GET API: Fetch all futsals
@@ -42,7 +42,7 @@ const getFutsal = async (req, res) => {
 // GET API: Find Nearby Futsals
 const listNearbyFutsals = async (req, res) => {
   const { longitude, latitude } = req.query;
-  const radiusInKiloMeters = 5;
+  const radiusInKiloMeters = 10;
   try {
     const futsals = await Futsal.find({
       location: {
