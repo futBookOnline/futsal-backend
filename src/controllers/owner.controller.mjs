@@ -10,11 +10,11 @@ import {
 const listFutsalOwners = async (req, res) => {
   try {
     const futsalOwners = await FutsalOwner.find().select("-password");
-    futsalOwners
-      ? res.status(200).json({ data: futsalOwners, error: null })
-      : res.status(404).json({ data: null, error: "Empty Futsal Owners List" });
+    futsalOwners.length > 0
+      ? res.status(200).json({ data: futsalOwners })
+      : res.status(404).json({ error: "Empty Futsal Owners List" });
   } catch (error) {
-    res.status(400).json({ data: null, error: error.message });
+    res.status(400).json({error: error.message });
   }
 };
 

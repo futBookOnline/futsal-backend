@@ -71,5 +71,5 @@ const futsalSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Futsal = mongoose.model("Futsal", futsalSchema);
+const Futsal = mongoose.model("FutsalVenue", futsalSchema);
 export default Futsal;

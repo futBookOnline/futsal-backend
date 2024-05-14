@@ -29,8 +29,8 @@ const futsalUserSchema = mongoose.Schema(
       default: new Date().toString(),
     },
     isGoogleUser: {
-      type:Boolean,
-      default: false
+      type: Boolean,
+      default: false,
     },
     imageUrl: {
       type: String,
@@ -38,14 +38,14 @@ const futsalUserSchema = mongoose.Schema(
         "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg",
     },
     dateOfBirth: {
-      type: Date
+      type: Date,
     },
     contact: {
       type: Number,
     },
     gender: {
-      type: String
-    }
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -54,7 +54,7 @@ const futsalUserSchema = mongoose.Schema(
 
 // hash a password before doc is saved to db
 futsalUserSchema.pre("save", async function (next) {
-  if(this.password){
+  if (this.password) {
     this.password = await hashPassword(this.password);
   }
   next();
@@ -69,7 +69,10 @@ futsalUserSchema.statics.register = async function (fullName, email, password) {
 
 // Static method to login user
 futsalUserSchema.statics.login = async function (email, password) {
+  if (!email) throw Error("Email cannot be empty");
+  if (!password) throw Error("Password cannot be empty");
   const user = await this.findOne({ email });
+  if (user.isGoogleUser) throw Error("Continue with google sign in");
   if (!user) {
     throw Error("Email does not exist");
   }

@@ -19,7 +19,8 @@ const listPaginatedFutsals = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   try {
     const futsals = await paginatedResult(Futsal, page, limit);
-    futsals
+    console.log("FUTSALS: ", futsals)
+    futsals.result.length > 0
       ? res.status(200).json({ data: futsals })
       : res.status(404).json({ error: "Futsal List is empty" });
   } catch (error) {
@@ -61,7 +62,7 @@ const listNearbyFutsals = async (req, res) => {
 
 // POST API: Add New Futsal
 const addFutsal = async (req, res) => {
-  const { name, userId, address, location, contact } = req.body;
+  const { name, userId, address, location, contact, opensAt, closesAt, price } = req.body;
   try {
     const futsal = await Futsal.create({
       name,
@@ -69,6 +70,9 @@ const addFutsal = async (req, res) => {
       address,
       location,
       contact,
+      price,
+      opensAt,
+      closesAt
     });
     futsal
       ? res.status(201).json({ data: futsal })
