@@ -7,7 +7,7 @@ import cors from "cors"
 import futsalUserRoute from "./routes/user.route.mjs"
 import futsalRoute from "./routes/venue.route.mjs"
 import futsalOwnerRoute from "./routes/owner.route.mjs"
-import authRoute from "./routes/auth.route.mjs"
+import googleAuthRoute from "./routes/google.auth.route.mjs"
 import reservationRoute from "./routes/reservation.route.mjs"
 
 const app  = express()
@@ -40,5 +40,5 @@ app.listen(port, () => {
 app.use("/users", futsalUserRoute)
 app.use("/venues", futsalRoute)
 app.use("/owners", futsalOwnerRoute)
-app.use("/auth/google", authRoute);
+app.use("/auth/google", googleAuthRoute);
 app.use("/reservations", reservationRoute)
