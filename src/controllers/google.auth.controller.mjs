@@ -1,4 +1,4 @@
-import User from "../models/futsal.user.model.mjs";
+import User from "../models/user.model.mjs";
 import {
   oauth2Client,
   getUserInfo,

@@ -8,7 +8,7 @@ import {
   listPaginatedFutsals,
   updateFutsal,
   updateProfileImage
-} from "../controllers/futsal.venue.controller.mjs";
+} from "../controllers/venue.controller.mjs";
 
 // router.get("/", listFutsals);
 router.get("/", listPaginatedFutsals);

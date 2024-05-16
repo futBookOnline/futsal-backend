@@ -4,11 +4,11 @@ import mongoose from 'mongoose'
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
-import futsalUserRoute from "./routes/futsal.user.route.mjs"
-import futsalRoute from "./routes/futsal.venue.route.mjs"
-import futsalOwnerRoute from "./routes/futsal.owner.route.mjs"
-import authRoute from "./routes/auth.route.mjs"
-import reservationRoute from "./routes/futsal.reservation.route.mjs"
+import futsalUserRoute from "./routes/user.route.mjs"
+import futsalRoute from "./routes/venue.route.mjs"
+import futsalOwnerRoute from "./routes/owner.route.mjs"
+import googleAuthRoute from "./routes/google.auth.route.mjs"
+import reservationRoute from "./routes/reservation.route.mjs"
 
 const app  = express()
 const port = 3000 || process.env.PORT;
@@ -40,5 +40,5 @@ app.listen(port, () => {
 app.use("/users", futsalUserRoute)
 app.use("/venues", futsalRoute)
 app.use("/owners", futsalOwnerRoute)
-app.use("/auth/google", authRoute);
+app.use("/auth/google", googleAuthRoute);
 app.use("/reservations", reservationRoute)

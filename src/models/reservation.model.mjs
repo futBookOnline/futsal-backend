@@ -55,17 +55,33 @@ const reservationSchema = mongoose.Schema(
       validate: [isEmail, "Please enter valid email."],
     },
     reservationDate: {
-      type: Date,
-      required: [true, "Reservation date is required."],
+      year: {
+        type: Number,
+        required: [true, "Reservation year is required."],
+      },
+      month: {
+        type: Number,
+        required: [true, "Reservation month is required."],
+      },
+      day: {
+        type: Number,
+        required: [true, "Reservation day is required."],
+      },
     },
     reservationTime: {
-      type: String,
-      required: [true, "Reservation time is required."],
+      hour: {
+        type: Number,
+        required: [true, "Reservation hour is required."],
+      },
+      minute: {
+        type: Number,
+        required: [true, "Reservation  minute is required."],
+      },
     },
-    reservationId:{
+    reservationId: {
       type: String,
-      required: [true, "Reservation ID is required."]
-    }
+      required: [true, "Reservation ID is required."],
+    },
   },
   {
     timestamps: true,

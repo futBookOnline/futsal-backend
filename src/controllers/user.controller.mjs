@@ -1,4 +1,4 @@
-import FutsalUser from "../models/futsal.user.model.mjs";
+import FutsalUser from "../models/user.model.mjs";
 import {
   createToken,
   hashPassword,
