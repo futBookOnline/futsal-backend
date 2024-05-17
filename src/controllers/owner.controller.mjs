@@ -46,7 +46,7 @@ const loginFutsalOwner = async (req, res) => {
       const token = createToken(futsalOwner._id);
       const maxAge = 3 * 24 * 60 * 60;
       res
-        .cookie("jwt-login-owner", token, {
+        .cookie("jwtLoginOwner", token, {
           httpOnly: true,
           maxAge: maxAge * 1000,
         })
