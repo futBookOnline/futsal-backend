@@ -25,7 +25,7 @@ const listUsers = async (req, res) => {
   try {
     const futsalUsers = await FutsalUser.find().select("-password");
     futsalUsers
-      ? res.status(200).json({ data: futsalUsers})
+      ? res.status(200).json({ data: futsalUsers })
       : res.status(404).json({ error: "No users available." });
   } catch (error) {
     res.status(400).json({
@@ -41,7 +41,7 @@ const getUser = async (req, res) => {
     const user = await FutsalUser.findById(id).select("-password");
     user
       ? res.status(200).json({ data: user })
-      : res.status(404).json({error: "User Not Found" });
+      : res.status(404).json({ error: "User Not Found" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -52,12 +52,7 @@ const addUser = async (req, res) => {
   const { fullName, email, password } = req.body;
   console.log(fullName, email, password);
   try {
-    // const user = await FutsalUser.create({ fullName, email, password });
     const user = await FutsalUser.register(fullName, email, password);
-    // if (!user)
-    //   return res
-    //     .status(400)
-    //     .json({ data: null, error: "Could not register new user" });
     const { password: hashedPassword, ...rest } = user._doc;
     res.status(201).json({ data: rest });
   } catch (error) {
@@ -66,29 +61,6 @@ const addUser = async (req, res) => {
   }
 };
 
-// Send Email Verification
-// const sendEmailVerification = async (email, id) => {
-//   const transporter = nodemailer.createTransport({
-//     service: "gmail",
-//     auth: {
-//       user: process.env.EMAIL,
-//       pass: process.env.PASSWORD,
-//     },
-//   });
-
-//   const mailOptions = {
-//     from: process.env.EMAIL,
-//     to: email,
-//     subject: "Futsal Finder: Verify your email",
-//     text: `http://localhost:3000/users/:${id}`,
-//   };
-//   try {
-//     await transporter.sendMail(mailOptions);
-//     console.log("Email Sent")
-//   } catch (error) {
-//    console.log("FAILED: ", error.message)
-//   }
-// };
 
 // PUT API: Activate Email
 const activateEmail = async (req, res) => {
@@ -104,7 +76,7 @@ const activateEmail = async (req, res) => {
     }
     res.status(200).json({ data: user });
   } catch (error) {
-    res.status(400).json({error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -124,7 +96,7 @@ const loginUser = async (req, res) => {
       .status(200)
       .json({ data: rest });
   } catch (error) {
-    res.status(400).json({error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -133,12 +105,12 @@ const resetPassword = async (req, res) => {
   const { password } = req.body;
   const { id } = req.params;
   try {
-    if(!password) return res.status(401).json({error: "Password cannot be empty"})
+    if (!password)
+      return res.status(401).json({ error: "Password cannot be empty" });
     const user = await FutsalUser.findById(id);
-    if (!user)
-      return res.status(401).json({  error: "User not found" });
+    if (!user) return res.status(401).json({ error: "User not found" });
     if (!user.isActive)
-      return res.status(401).json({  error: "User is not active" });
+      return res.status(401).json({ error: "User is not active" });
     const checkOldPassword = await comparePassword(password, user.password);
     if (checkOldPassword)
       return res.status(401).json({
@@ -154,7 +126,7 @@ const resetPassword = async (req, res) => {
     const { password: hashedPass, ...rest } = updateUser._doc;
     res.status(200).json({ data: rest });
   } catch (error) {
-    res.status(400).json({  error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -170,11 +142,10 @@ const changePassword = async (req, res) => {
           : "New password cannot be empty",
       });
     const user = await FutsalUser.findById(id);
-    if (!user)
-      return res.status(404).json({ error: "User not found" });
+    if (!user) return res.status(404).json({ error: "User not found" });
     const checkOldPassword = await comparePassword(oldPassword, user.password);
     if (!checkOldPassword)
-      return res.status(401).json({  error: "wrong password" });
+      return res.status(401).json({ error: "wrong password" });
     const checkNewPassword = await comparePassword(newPassword, user.password);
     if (checkNewPassword)
       return res.status(401).json({
@@ -187,7 +158,7 @@ const changePassword = async (req, res) => {
       { new: true }
     );
     if (!updatePassword)
-      return res.status(500).json({error: "Update Failed" });
+      return res.status(500).json({ error: "Update Failed" });
     const { password: hashedPass, ...rest } = updatePassword._doc;
     res.status(200).json({ data: rest });
   } catch (error) {
@@ -196,35 +167,38 @@ const changePassword = async (req, res) => {
 };
 
 // PUT API: Update User Info
-const updateUser = async(req, res) => {
-  const {id} = req.params
-  const updateFields = req.body
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const updateFields = req.body;
   try {
-    const updateUser = await FutsalUser.findByIdAndUpdate(id, {$set: updateFields}, {new: true})
-    if(!updateUser) return res.status(401).json({ error: "Could not update user"})
-      const{password, ...rest} = updateUser._doc
-    res.status(200).json({data: rest})
+    const updateUser = await FutsalUser.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true }
+    );
+    if (!updateUser)
+      return res.status(401).json({ error: "Could not update user" });
+    const { password, ...rest } = updateUser._doc;
+    res.status(200).json({ data: rest });
   } catch (error) {
-    res.status(400).json({error: error.message})
+    res.status(400).json({ error: error.message });
   }
-}
-
+};
 
 // PUT API: Update Profile Picture
 const updateProfilePicture = async (req, res) => {
-  const {imageUrl } = req.body;
-  const {id} = req.params
+  const { imageUrl } = req.body;
+  const { id } = req.params;
   try {
     const user = await FutsalUser.findByIdAndUpdate(
       id,
       { imageUrl },
       { new: true }
     ).select("-password");
-    if (!user)
-      return res.status(401).json({ error: "Image Update Failed" });
+    if (!user) return res.status(401).json({ error: "Image Update Failed" });
     res.status(200).json({ data: user });
   } catch (error) {
-    res.status(400).json({error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -244,5 +218,5 @@ export {
   resetPassword,
   changePassword,
   updateUser,
-  updateProfilePicture
+  updateProfilePicture,
 };
