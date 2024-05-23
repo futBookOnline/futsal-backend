@@ -10,8 +10,9 @@ import {
   changePassword,
   resetPassword
 } from "../controllers/owner.controller.mjs";
+import { verifyToken } from "../middleware/auth.middleware.mjs";
 
-router.get("/", listFutsalOwners);
+router.get("/", verifyToken, listFutsalOwners);
 router.post("/register", addFutsalOwner);
 router.post("/login", loginFutsalOwner);
 router.put("/activate/:id", activateEmail);

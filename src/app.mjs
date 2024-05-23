@@ -9,6 +9,7 @@ import futsalRoute from "./routes/venue.route.mjs"
 import futsalOwnerRoute from "./routes/owner.route.mjs"
 import googleAuthRoute from "./routes/google.auth.route.mjs"
 import reservationRoute from "./routes/reservation.route.mjs"
+import mailerRoute from "./routes/mailer.route.mjs"
 
 const app  = express()
 const port = 3000 || process.env.PORT;
@@ -42,3 +43,4 @@ app.use("/venues", futsalRoute)
 app.use("/owners", futsalOwnerRoute)
 app.use("/auth/google", googleAuthRoute);
 app.use("/reservations", reservationRoute)
+app.use("/email", mailerRoute)
