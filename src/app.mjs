@@ -16,7 +16,12 @@ const port = process.env.PORT || 3000;
 const hostname = "http://localhost:";
 
 const mongoUrl = process.env.MONGODB_URI
-
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000, // Adjust timeout as needed
+  connectTimeoutMS: 10000, // Adjust timeout as needed
+};
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -27,7 +32,7 @@ app.use(cors())
 app.listen(port, () => {
   console.log(`Server is running at ${hostname}${port}`);
   mongoose
-  .connect(mongoUrl)
+  .connect(mongoUrl, options)
   .then(() => {
     console.log("Database Connection Successful.");
   })
