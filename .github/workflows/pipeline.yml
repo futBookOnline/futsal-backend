@@ -1,13 +1,30 @@
-name: Running Deployment Pipeline
-run-name: ${{github.actor}} in ${{github.ref}}
+name: Build and Deploy
+
 on:
-    push:
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+
 jobs:
-    deploying:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
-            - name: Install Dependencies
-              run: npm install
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+      
+      - name: Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.API_FTP_SERVER }}
+          username: ${{ secrets.API_FTP_USERNAME }}
+          password: ${{ secrets.API_FTP_PASSWORD }}
+          # local-dir: dist/
+          server-dir: /
+          
