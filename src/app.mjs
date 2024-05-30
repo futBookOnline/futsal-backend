@@ -12,7 +12,7 @@ import reservationRoute from "./routes/reservation.route.mjs"
 import mailerRoute from "./routes/mailer.route.mjs"
 
 const app  = express()
-const port = 3000 || process.env.PORT;
+const port = process.env.PORT || 3000;
 const hostname = "http://localhost:";
 
 const mongoUrl = process.env.MONGODB_URI
