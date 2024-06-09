@@ -46,26 +46,21 @@ const futsalSchema = mongoose.Schema(
     opensAt: {
       hour: {
         type: Number,
-        required: [true, "Opening hour is required"],
       },
       minute: {
         type: Number,
-        required: [true, "Opening minute is required"],
       },
     },
     closesAt: {
       hour: {
         type: Number,
-        required: [true, "Closing hour is required"],
       },
       minute: {
         type: Number,
-        required: [true, "Closing minute is required"],
       },
     },
     price: {
-      type: Number,
-      required: [true, "Price is required"],
+      type: Number
     },
   },
   { timestamps: true }

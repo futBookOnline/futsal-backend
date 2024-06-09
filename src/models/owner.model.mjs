@@ -19,7 +19,7 @@ const futsalOwnerSchema = mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     lastLoggedIn: {
       type: Date,
