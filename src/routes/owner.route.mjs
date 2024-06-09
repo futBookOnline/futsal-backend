@@ -3,6 +3,7 @@ const router = express.Router();
 import {
   listFutsalOwners,
   addFutsalOwner,
+  emailExists,
   loginFutsalOwner,
   activateEmail,
   deleteFutsalOwner,
@@ -13,6 +14,7 @@ import {
 import { verifyToken } from "../middleware/auth.middleware.mjs";
 
 router.get("/", verifyToken, listFutsalOwners);
+router.post("/emailExists", emailExists)
 router.post("/register", addFutsalOwner);
 router.post("/login", loginFutsalOwner);
 router.put("/activate/:id", activateEmail);
