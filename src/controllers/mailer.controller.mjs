@@ -3,7 +3,7 @@ const { randomInt } = await import("node:crypto");
 
 // Send Email
 export const sendVerificationEmail = async (req, res) => {
-  const verificationCode = randomInt(10000, 1000000);
+  const verificationCode = randomInt(100000, 1000000);
   const { email, subject } = req.body;
   const message = `Your verification code: ${verificationCode}`
   const result = await sendEmail(email, subject, message);
