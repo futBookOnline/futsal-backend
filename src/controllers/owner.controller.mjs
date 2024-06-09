@@ -14,7 +14,7 @@ const listFutsalOwners = async (req, res) => {
       ? res.status(200).json({ data: futsalOwners })
       : res.status(404).json({ error: "Empty Futsal Owners List" });
   } catch (error) {
-    res.status(400).json({error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -33,6 +33,21 @@ const addFutsalOwner = async (req, res) => {
   }
 };
 
+// Check Exisiting Email
+
+const emailExists = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const futsalOwner = await FutsalOwner.findOne({ email }).select(
+      "-password"
+    );
+    futsalOwner
+      ? res.status(200).json({ data: futsalOwner })
+      : res.status(403).json({ error: "Email not found" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 // Login Futsal Owner
 const loginFutsalOwner = async (req, res) => {
   const { email, password } = req.body;
@@ -57,8 +72,6 @@ const loginFutsalOwner = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-
 
 // Activate Email
 const activateEmail = async (req, res) => {
@@ -162,6 +175,7 @@ const logoutFutsalOwner = async (req, res) => {
 export {
   listFutsalOwners,
   addFutsalOwner,
+  emailExists,
   loginFutsalOwner,
   activateEmail,
   deleteFutsalOwner,
