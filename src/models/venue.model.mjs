@@ -15,10 +15,10 @@ const futsalSchema = mongoose.Schema(
         type: String,
         required: [true, "Street address is required."],
       },
-      municipality: {
-        type: String,
-        required: [true, "Municipality name is required."],
-      },
+      // municipality: {
+      //   type: String,
+      //   required: [true, "Municipality name is required."],
+      // },
       district: {
         type: String,
         required: [true, "District name is required."],

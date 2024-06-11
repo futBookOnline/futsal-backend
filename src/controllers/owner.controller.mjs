@@ -42,10 +42,10 @@ const emailExists = async (req, res) => {
       "-password"
     );
     futsalOwner
-      ? res.status(200).json({ data: futsalOwner })
+      ? res.status(200).json({ data: futsalOwner})
       : res.status(403).json({ error: "Email not found" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({error: error.message });
   }
 };
 // Login Futsal Owner
