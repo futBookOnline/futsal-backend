@@ -65,6 +65,7 @@ const loginFutsalOwner = async (req, res) => {
           httpOnly: true,
           secure: true,
           sameSite: 'None',
+          partition: '/',
           maxAge: maxAge * 1000,
         })
         .status(200)
