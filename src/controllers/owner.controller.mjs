@@ -64,7 +64,8 @@ const loginFutsalOwner = async (req, res) => {
         .cookie("jwtLoginOwner", token, {
           httpOnly: true,
           secure: true,
-          sameSite: 'lax',
+          sameSite: 'none',
+          partitioned,
           maxAge: maxAge * 1000,
         })
         .status(200)
