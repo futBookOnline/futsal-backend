@@ -40,7 +40,7 @@ const googleOAuthCallback = async (req, res) => {
     if (!user)
       return res
         .status(400)
-        .json({ error: "Could not register user" })
+        .json({ message: "Could not register user" })
         .redirect(FAILURE_REDIRECT_URL);
     const token = createToken(user._id);
     res

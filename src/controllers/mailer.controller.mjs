@@ -9,6 +9,6 @@ export const sendVerificationEmail = async (req, res) => {
   const result = await sendEmail(email, subject, message);
   result.verificationCode = verificationCode;
   result
-    ? res.status(200).json({ data: result })
-    : res.status(500).json({ error: "Internal Server Error" });
+    ? res.status(200).json(result)
+    : res.status(500).json({ message: "Internal Server Error" });
 };

@@ -25,11 +25,11 @@ const listUsers = async (req, res) => {
   try {
     const futsalUsers = await FutsalUser.find().select("-password");
     futsalUsers
-      ? res.status(200).json({ data: futsalUsers })
-      : res.status(404).json({ error: "No users available." });
+      ? res.status(200).json(futsalUsers )
+      : res.status(404).json({ message: "No users available." });
   } catch (error) {
     res.status(400).json({
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -40,10 +40,10 @@ const getUser = async (req, res) => {
   try {
     const user = await FutsalUser.findById(id).select("-password");
     user
-      ? res.status(200).json({ data: user })
-      : res.status(404).json({ error: "User Not Found" });
+      ? res.status(200).json(user )
+      : res.status(404).json({ message: "User Not Found" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -54,10 +54,10 @@ const addUser = async (req, res) => {
   try {
     const user = await FutsalUser.register(fullName, email, password);
     const { password: hashedPassword, ...rest } = user._doc;
-    res.status(201).json({ data: rest });
+    res.status(201).json( rest );
   } catch (error) {
     const errors = handleErrors(error);
-    res.status(400).json({ error: errors });
+    res.status(400).json({ message: errors });
   }
 };
 
@@ -72,11 +72,11 @@ const activateEmail = async (req, res) => {
       { new: true }
     ).select("-password");
     if (!user) {
-      res.status(404).json({ error: "User not found." });
+      res.status(404).json({ message: "User not found." });
     }
-    res.status(200).json({ data: user });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -91,12 +91,15 @@ const loginUser = async (req, res) => {
     res
       .cookie("jwt-login-user", token, {
         httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+          partitioned: true,
         maxAge: maxAge * 1000,
       })
       .status(200)
-      .json({ data: rest });
+      .json(rest );
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -106,15 +109,15 @@ const resetPassword = async (req, res) => {
   const { id } = req.params;
   try {
     if (!password)
-      return res.status(401).json({ error: "Password cannot be empty" });
+      return res.status(401).json({ message: "Password cannot be empty" });
     const user = await FutsalUser.findById(id);
-    if (!user) return res.status(401).json({ error: "User not found" });
+    if (!user) return res.status(401).json({ message: "User not found" });
     if (!user.isActive)
-      return res.status(401).json({ error: "User is not active" });
+      return res.status(401).json({ message: "User is not active" });
     const checkOldPassword = await comparePassword(password, user.password);
     if (checkOldPassword)
       return res.status(401).json({
-        error: "New password cannot be same as old password",
+        message: "New password cannot be same as old password",
       });
 
     const hashedPassword = await hashPassword(password);
@@ -124,9 +127,9 @@ const resetPassword = async (req, res) => {
       { new: true }
     );
     const { password: hashedPass, ...rest } = updateUser._doc;
-    res.status(200).json({ data: rest });
+    res.status(200).json(rest);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -137,19 +140,19 @@ const changePassword = async (req, res) => {
   try {
     if (!oldPassword || !newPassword)
       return res.status(401).json({
-        error: !oldPassword
+        message: !oldPassword
           ? "Old password cannot be empty"
           : "New password cannot be empty",
       });
     const user = await FutsalUser.findById(id);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found" });
     const checkOldPassword = await comparePassword(oldPassword, user.password);
     if (!checkOldPassword)
-      return res.status(401).json({ error: "wrong password" });
+      return res.status(401).json({ message: "wrong password" });
     const checkNewPassword = await comparePassword(newPassword, user.password);
     if (checkNewPassword)
       return res.status(401).json({
-        error: "New password and old password cannot be same",
+        message: "New password and old password cannot be same",
       });
     const hashedPassword = await hashPassword(newPassword);
     const updatePassword = await FutsalUser.findByIdAndUpdate(
@@ -158,11 +161,11 @@ const changePassword = async (req, res) => {
       { new: true }
     );
     if (!updatePassword)
-      return res.status(500).json({ error: "Update Failed" });
+      return res.status(500).json({ message: "Update Failed" });
     const { password: hashedPass, ...rest } = updatePassword._doc;
-    res.status(200).json({ data: rest });
+    res.status(200).json(rest);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -177,11 +180,11 @@ const updateUser = async (req, res) => {
       { new: true }
     );
     if (!updateUser)
-      return res.status(401).json({ error: "Could not update user" });
+      return res.status(401).json({ message: "Could not update user" });
     const { password, ...rest } = updateUser._doc;
-    res.status(200).json({ data: rest });
+    res.status(200).json(rest);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -195,17 +198,17 @@ const updateProfilePicture = async (req, res) => {
       { imageUrl },
       { new: true }
     ).select("-password");
-    if (!user) return res.status(401).json({ error: "Image Update Failed" });
-    res.status(200).json({ data: user });
+    if (!user) return res.status(401).json({ message: "Image Update Failed" });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
 // GET API: Logout User
 const logoutUser = (req, res) => {
   res.cookie("jwt-login-user", "", { maxAge: 1 });
-  res.status(200).json({ data: "Logged out successfully." });
+  res.status(200).json({ message: "Logged out successfully." });
 };
 
 export {

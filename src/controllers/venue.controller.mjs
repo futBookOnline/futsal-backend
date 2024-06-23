@@ -6,10 +6,10 @@ const listFutsals = async (req, res) => {
   try {
     const futsals = await Futsal.find();
     futsals.length < 1
-      ? res.status(404).json({ error: "There are no futsals nearby." })
-      : res.status(200).json({ data: futsals });
+      ? res.status(404).json({ message: "There are no futsals nearby." })
+      : res.status(200).json( futsals );
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -21,10 +21,10 @@ const listPaginatedFutsals = async (req, res) => {
     const futsals = await paginatedResult(Futsal, page, limit);
     console.log("FUTSALS: ", futsals)
     futsals.result.length > 0
-      ? res.status(200).json({ data: futsals })
-      : res.status(404).json({ error: "Futsal List is empty" });
+      ? res.status(200).json(futsals )
+      : res.status(404).json({ message: "Futsal List is empty" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -33,10 +33,10 @@ const getFutsal = async (req, res) => {
   try {
     const futsal = await Futsal.findById(req.params.id);
     futsal
-      ? res.status(200).json({ data: futsal })
-      : res.status(404).json({ error: "Futsal Not Found" });
+      ? res.status(200).json( futsal )
+      : res.status(404).json({ message: "Futsal Not Found" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -53,10 +53,10 @@ const listNearbyFutsals = async (req, res) => {
       },
     });
     futsals.length > 0
-      ? res.status(200).json({ data: futsals })
-      : res.status(404).json({ error: "No Futsals Nearby" });
+      ? res.status(200).json( futsals)
+      : res.status(404).json({ message: "No Futsals Nearby" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -75,10 +75,10 @@ const addFutsal = async (req, res) => {
       closesAt
     });
     futsal
-      ? res.status(201).json({ data: futsal })
-      : res.status(401).json({ error: "Could not add new futsal." });
+      ? res.status(201).json(futsal)
+      : res.status(401).json({ message: "Could not add new futsal." });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -93,10 +93,10 @@ const updateFutsal = async (req, res) => {
       { new: true }
     );
     if (!updatedFutsal)
-      return res.status(401).json({ error: "Could not update futsal" });
-    res.status(200).json({ data: updatedFutsal });
+      return res.status(401).json({ message: "Could not update futsal" });
+    res.status(200).json(updatedFutsal );
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -110,10 +110,10 @@ const updateProfileImage = async (req, res) => {
       { imageUrl },
       { new: true }
     );
-    if (!futsal) return res.status(401).json({ error: "Image Update Failed" });
-    res.status(200).json({ data: futsal });
+    if (!futsal) return res.status(401).json({ message: "Image Update Failed" });
+    res.status(200).json(futsal);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
