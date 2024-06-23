@@ -5,10 +5,10 @@ const listReservations = async (req, res) => {
   try {
     const reservations = await FutsalReservation.find();
     reservations.length > 0
-      ? res.status(200).json({ data: reservations })
-      : res.status(404).json({ error: "No reservations" });
+      ? res.status(200).json(reservations)
+      : res.status(404).json({ message: "No reservations" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -18,10 +18,10 @@ const getReservation = async (req, res) => {
   try {
     const reservation = await FutsalReservation.findById(id);
     reservation
-      ? res.status(200).json({ data: reservation })
-      : res.status(404).json({ error: "Reservation not found" });
+      ? res.status(200).json(reservation )
+      : res.status(404).json({ message: "Reservation not found" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -45,10 +45,10 @@ const getReservationByDate = async (req, res) => {
   try {
     const reservations = await FutsalReservation.find(query);
     reservations.length > 0
-      ? res.status(200).json({ data: reservations, query: query })
-      : res.status(404).json({ error: "Match not found" });
+      ? res.status(200).json(reservations)
+      : res.status(404).json({ message: "Match not found" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -81,10 +81,10 @@ const getReservationByVenueId = async (req, res) => {
     const reservations = await FutsalReservation.find(query);
     console.log("RESERVATIONS: ", reservations);
     reservations.length > 0
-      ? res.status(200).json({ data: reservations })
-      : res.status(404).json({ error: "Match not found" });
+      ? res.status(200).json( reservations )
+      : res.status(404).json({ message: "Match not found" });
   } catch (error) {
-    res.status(400).json({ error: "Something went wrong" });
+    res.status(400).json({ message: "Something went wrong" });
   }
 };
 
@@ -94,10 +94,10 @@ const addReservation = async (req, res) => {
   try {
     const reservation = await FutsalReservation.create(reservationObject);
     reservation
-      ? res.status(201).json({ data: reservation })
-      : res.status(401).json({ error: "Reservation failed" });
+      ? res.status(201).json(reservation)
+      : res.status(401).json({ message: "Reservation failed" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -107,10 +107,10 @@ const cancelReservation = async (req, res) => {
   try {
     const reservation = await FutsalReservation.findByIdAndDelete(id);
     reservation
-      ? res.status(200).json({ data: reservation })
-      : res.status(301).json({ error: "Failed cancelling reservation" });
+      ? res.status(200).json(reservation)
+      : res.status(301).json({ message: "Failed cancelling reservation" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 

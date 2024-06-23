@@ -11,10 +11,10 @@ const listFutsalOwners = async (req, res) => {
   try {
     const futsalOwners = await FutsalOwner.find().select("-password");
     futsalOwners.length > 0
-      ? res.status(200).json({ data: futsalOwners })
-      : res.status(404).json({ error: "Empty Futsal Owners List" });
+      ? res.status(200).json(futsalOwners)
+      : res.status(404).json({ message: "Empty Futsal Owners List" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -24,17 +24,16 @@ const addFutsalOwner = async (req, res) => {
   try {
     const futsalOwner = await FutsalOwner.create({ email, password });
     if (!futsalOwner) {
-      return res.status(400).json({ error: "Could Add New Owner" });
+      return res.status(400).json({ message: "Could Add New Owner" });
     }
     const { password: hashedPassword, ...rest } = futsalOwner._doc;
-    res.status(201).json({ data: rest });
+    res.status(201).json(rest);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
 // Check Exisiting Email
-
 const emailExists = async (req, res) => {
   const { email } = req.body;
   try {
@@ -42,10 +41,10 @@ const emailExists = async (req, res) => {
       "-password"
     );
     futsalOwner
-      ? res.status(200).json({ data: futsalOwner})
-      : res.status(403).json({ error: "Email not found" });
+      ? res.status(200).json(futsalOwner)
+      : res.status(403).json({ message: "Email not found" });
   } catch (error) {
-    res.status(400).json({error: error.message });
+    res.status(400).json({message: error.message });
   }
 };
 // Login Futsal Owner
@@ -56,12 +55,12 @@ const loginFutsalOwner = async (req, res) => {
     if (futsalOwner) {
       const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
       if (!futsalExists)
-        return res.status(300).json({ error: "create futsal profile" });
+        return res.status(300).json({ message: "create futsal profile" });
       const { password: hashedPassword, ...rest } = futsalOwner._doc;
       const token = createToken(futsalOwner._id);
       const maxAge = 3 * 24 * 60 * 60;
       res
-        .cookie("jwtLoginOwner", token, {
+        .cookie("jwt-login-owner", token, {
           httpOnly: true,
           secure: true,
           sameSite: 'none',
@@ -69,10 +68,10 @@ const loginFutsalOwner = async (req, res) => {
           maxAge: maxAge * 1000,
         })
         .status(200)
-        .json({ data: rest });
+        .json(rest);
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({message: error.message });
   }
 };
 
@@ -88,11 +87,11 @@ const activateEmail = async (req, res) => {
     if (!futsalOwner)
       return res
         .status(404)
-        .json({ error: "Invalid Id. Could not activate email" });
+        .json({ message: "Invalid Id. Could not activate email" });
     const { password: hashPassword, ...rest } = futsalOwner._doc;
-    res.status(200).json({ data: rest });
+    res.status(200).json(rest);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -102,14 +101,14 @@ const changePassword = async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   try {
     const user = await FutsalOwner.findById(id);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found" });
     const checkOldPassword = await comparePassword(oldPassword, user.password);
     if (!checkOldPassword)
-      return res.status(401).json({ error: "wrong password" });
+      return res.status(401).json({ message: "wrong password" });
     const checkNewPassword = await comparePassword(newPassword, user.password);
     if (checkNewPassword)
       return res.status(401).json({
-        error: "New password and old password cannot be same",
+        message: "New password and old password cannot be same",
       });
     const hashedPassword = await hashPassword(newPassword);
     const updatePassword = await FutsalOwner.findByIdAndUpdate(
@@ -118,11 +117,11 @@ const changePassword = async (req, res) => {
       { new: true }
     );
     if (!updatePassword)
-      return res.status(500).json({ error: "Update Failed" });
+      return res.status(500).json({ message: "Update Failed" });
     const { password: hashedPass, ...rest } = updatePassword._doc;
-    res.status(200).json({ data: rest });
+    res.status(200).json(rest);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -132,13 +131,13 @@ const resetPassword = async (req, res) => {
   const { password } = req.body;
   try {
     const user = await FutsalOwner.findById(id);
-    if (!user) return res.status(401).json({ error: "User not found" });
+    if (!user) return res.status(401).json({ message: "User not found" });
     if (!user.isActive)
-      return res.status(401).json({ error: "User is not active" });
+      return res.status(401).json({ message: "User is not active" });
     const checkOldPassword = await comparePassword(password, user.password);
     if (checkOldPassword)
       return res.status(401).json({
-        error: "New password cannot be same as old password",
+        message: "New password cannot be same as old password",
       });
 
     const hashedPassword = await hashPassword(password);
@@ -148,9 +147,9 @@ const resetPassword = async (req, res) => {
       { new: true }
     );
     const { password: hashedPass, ...rest } = updateUser._doc;
-    res.status(200).json({ data: rest });
+    res.status(200).json( rest);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -160,19 +159,19 @@ const deleteFutsalOwner = async (req, res) => {
   try {
     const futsalOwner = await FutsalOwner.findByIdAndDelete(id);
     if (!futsalOwner) {
-      return res.status(404).json({ error: "Futsal Owner Not Found" });
+      return res.status(404).json({ message: "Futsal Owner Not Found" });
     }
     const { password: hashedPassword, ...rest } = futsalOwner._doc;
-    return res.status(200).json({ data: rest });
+    return res.status(200).json(rest);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
 // Logout Futsal Owner
 const logoutFutsalOwner = async (req, res) => {
   res.cookie("jwt-login-owner", "", { maxAge: 1 });
-  res.status(200).json({ data: "Logged out successfully." });
+  res.status(200).json({ message: "Logged out successfully." });
 };
 
 export {
