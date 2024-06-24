@@ -1,5 +1,8 @@
 import Futsal from "../models/venue.model.mjs";
 import paginatedResult from "../utils/pagination.utils.mjs";
+import { ftpClient } from "../utils/uploadPhoto.utils.mjs";
+const { randomUUID } = await import("node:crypto");
+import fs from "fs";
 
 // GET API: Fetch all futsals
 const listFutsals = async (req, res) => {
@@ -7,7 +10,7 @@ const listFutsals = async (req, res) => {
     const futsals = await Futsal.find();
     futsals.length < 1
       ? res.status(404).json({ message: "There are no futsals nearby." })
-      : res.status(200).json( futsals );
+      : res.status(200).json(futsals);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -19,9 +22,9 @@ const listPaginatedFutsals = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   try {
     const futsals = await paginatedResult(Futsal, page, limit);
-    console.log("FUTSALS: ", futsals)
+    console.log("FUTSALS: ", futsals);
     futsals.result.length > 0
-      ? res.status(200).json(futsals )
+      ? res.status(200).json(futsals)
       : res.status(404).json({ message: "Futsal List is empty" });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -33,7 +36,7 @@ const getFutsal = async (req, res) => {
   try {
     const futsal = await Futsal.findById(req.params.id);
     futsal
-      ? res.status(200).json( futsal )
+      ? res.status(200).json(futsal)
       : res.status(404).json({ message: "Futsal Not Found" });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -53,7 +56,7 @@ const listNearbyFutsals = async (req, res) => {
       },
     });
     futsals.length > 0
-      ? res.status(200).json( futsals)
+      ? res.status(200).json(futsals)
       : res.status(404).json({ message: "No Futsals Nearby" });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -62,7 +65,21 @@ const listNearbyFutsals = async (req, res) => {
 
 // POST API: Add New Futsal
 const addFutsal = async (req, res) => {
-  const { name, userId, address, location, contact, opensAt, closesAt, price } = req.body;
+  const { name, userId, address, location, contact, opensAt, closesAt, price } =
+    req.body;
+  const file = req.file;
+  if (!file) return res.status(400).json({ message: "No File Uploaded." });
+  const fileName = file.originalname;
+  const filePath = file.path;
+  const uuid = randomUUID();
+  const imageUrl = `https://owner.bookmyfutsal.com/images/${uuid.concat(fileName)}`;
+  ftpClient.put(filePath, `/images/${uuid.concat(fileName)}`, (error) => {
+    if (error) return res.status(400).json({ message: "Photo upload failed." });
+    //Delete local file after upload
+    fs.unlink(filePath, (error) => {
+      if (error) console.error("Failed to delete local file:", error);
+    });
+  });
   try {
     const futsal = await Futsal.create({
       name,
@@ -70,9 +87,10 @@ const addFutsal = async (req, res) => {
       address,
       location,
       contact,
+      imageUrl,
       price,
       opensAt,
-      closesAt
+      closesAt,
     });
     futsal
       ? res.status(201).json(futsal)
@@ -94,7 +112,7 @@ const updateFutsal = async (req, res) => {
     );
     if (!updatedFutsal)
       return res.status(401).json({ message: "Could not update futsal" });
-    res.status(200).json(updatedFutsal );
+    res.status(200).json(updatedFutsal);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -110,7 +128,8 @@ const updateProfileImage = async (req, res) => {
       { imageUrl },
       { new: true }
     );
-    if (!futsal) return res.status(401).json({ message: "Image Update Failed" });
+    if (!futsal)
+      return res.status(401).json({ message: "Image Update Failed" });
     res.status(200).json(futsal);
   } catch (error) {
     res.status(400).json({ message: error.message });

@@ -89,7 +89,7 @@ const loginUser = async (req, res) => {
     const maxAge = 3 * 24 * 60 * 60;
     const { password: hashedPassword, ...rest } = user._doc;
     res
-      .cookie("jwt-login-user", token, {
+      .cookie("jwt_login_user", token, {
         httpOnly: true,
           secure: true,
           sameSite: 'none',
@@ -207,7 +207,7 @@ const updateProfilePicture = async (req, res) => {
 
 // GET API: Logout User
 const logoutUser = (req, res) => {
-  res.cookie("jwt-login-user", "", { maxAge: 1 });
+  res.cookie("jwt_login_user", "", { maxAge: 1 });
   res.status(200).json({ message: "Logged out successfully." });
 };
 

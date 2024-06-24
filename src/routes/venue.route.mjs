@@ -9,12 +9,13 @@ import {
   updateFutsal,
   updateProfileImage
 } from "../controllers/venue.controller.mjs";
+import { multerUpload } from "../utils/uploadPhoto.utils.mjs";
 
 // router.get("/", listFutsals);
 router.get("/", listPaginatedFutsals);
 router.get("/location", listNearbyFutsals);
 router.get("/:id", getFutsal);
-router.post("/add", addFutsal);
+router.post("/add", multerUpload.single("file"), addFutsal);
 router.put("/update/:id", updateFutsal)
 router.put("/upload-image", updateProfileImage)
 

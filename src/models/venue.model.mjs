@@ -8,12 +8,12 @@ const futsalSchema = mongoose.Schema(
     },
     userId: {
       type: String,
-      required: [true, "User Id is required."],
+      // required: [true, "User Id is required."],
     },
     address: {
       street: {
         type: String,
-        required: [true, "Street address is required."],
+        // required: [true, "Street address is required."],
       },
       // municipality: {
       //   type: String,
@@ -21,7 +21,7 @@ const futsalSchema = mongoose.Schema(
       // },
       district: {
         type: String,
-        required: [true, "District name is required."],
+        // required: [true, "District name is required."],
       },
       // OR
       // type: Object
@@ -36,7 +36,7 @@ const futsalSchema = mongoose.Schema(
 
     contact: {
       type: Number,
-      required: [true, "Contact is required."],
+      // required: [true, "Contact is required."],
     },
     imageUrl: {
       type: String,
