@@ -5,12 +5,12 @@ export const sendEmail = async (email, subject, message) => {
     host: "mail.bookmyfutsal.com",
     secure: true,
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
+      user: process.env.NO_REPLY_EMAIL,
+      pass: process.env.NO_REPLY_PASSWORD,
     },
   });
   const mailOptions = {
-    from: process.env.EMAIL,
+    from: process.env.NO_REPLY_EMAIL,
     to: email,
     subject: subject,
     text: message,

@@ -4,9 +4,9 @@ import { google } from "googleapis";
 import 'dotenv/config'
 import bcrypt from "bcrypt";
 
-const CLIENT_ID = process.env.CLIENT_ID
-const CLIENT_SECRET = process.env.CLIENT_SECRET
-const REDIRECT_URI = process.env.REDIRECT_URI
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI
 const JWT_SECRET = process.env.JWT_SECRET
 
 // Create OAuth2 client

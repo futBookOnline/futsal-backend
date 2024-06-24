@@ -5,8 +5,8 @@ import {
   createToken,
 } from "../utils/auth.utils.mjs";
 
-const SUCCESS_REDIRECT_URL = "http://localhost:5173/";
-const FAILURE_REDIRECT_URL = "http://localhost:5173/login";
+const SUCCESS_REDIRECT_URL = process.env.SUCCESS_REDIRECT_URL
+const FAILURE_REDIRECT_URL = process.env.FAILURE_REDIRECT_URL
 
 const getGoogleLogin = async (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
@@ -29,7 +29,7 @@ const googleOAuthCallback = async (req, res) => {
     if (result) {
       const token = createToken(result._id);
       return res
-        .cookie("jwt-login-user", token, {
+        .cookie("jwt_login_user", token, {
           httpOnly: true,
           maxAge: maxAge * 1000,
         })
@@ -45,7 +45,7 @@ const googleOAuthCallback = async (req, res) => {
     const token = createToken(user._id);
     res
       .status(201)
-      .cookie("jwt-login-user", token, {
+      .cookie("jwt_login_user", token, {
         httpOnly: true,
         maxAge: maxAge * 1000,
       })

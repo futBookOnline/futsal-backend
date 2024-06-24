@@ -60,7 +60,7 @@ const loginFutsalOwner = async (req, res) => {
       const token = createToken(futsalOwner._id);
       const maxAge = 3 * 24 * 60 * 60;
       res
-        .cookie("jwt-login-owner", token, {
+        .cookie("jwt_login_owner", token, {
           httpOnly: true,
           secure: true,
           sameSite: 'none',
@@ -170,7 +170,7 @@ const deleteFutsalOwner = async (req, res) => {
 
 // Logout Futsal Owner
 const logoutFutsalOwner = async (req, res) => {
-  res.cookie("jwt-login-owner", "", { maxAge: 1 });
+  res.cookie("jwt_login_owner", "", { maxAge: 1 });
   res.status(200).json({ message: "Logged out successfully." });
 };
 
