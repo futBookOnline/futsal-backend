@@ -15,16 +15,20 @@ const futsalSchema = mongoose.Schema(
         type: String,
         // required: [true, "Street address is required."],
       },
-      // municipality: {
-      //   type: String,
-      //   required: [true, "Municipality name is required."],
-      // },
       district: {
         type: String,
         // required: [true, "District name is required."],
       },
       // OR
       // type: Object
+    },
+    contact: {
+      type: Number,
+      // required: [true, "Contact is required."],
+    },
+    isOnboarded:{
+      type: Boolean,
+      default: false
     },
     location: {
       type: { type: String, default: "Point" },
@@ -34,10 +38,7 @@ const futsalSchema = mongoose.Schema(
       },
     },
 
-    contact: {
-      type: Number,
-      // required: [true, "Contact is required."],
-    },
+    
     imageUrl: {
       type: String,
       default:
@@ -59,9 +60,19 @@ const futsalSchema = mongoose.Schema(
         type: Number,
       },
     },
-    price: {
-      type: String,
-    },
+    priceList: [
+      {
+        price: {
+          type: Number,
+        },
+        startingTime: {
+          type: String,
+        },
+        endingTime: {
+          type: String,
+        }
+      }
+    ],
   },
   { timestamps: true }
 );

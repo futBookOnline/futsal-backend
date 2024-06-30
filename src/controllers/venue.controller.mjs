@@ -65,32 +65,13 @@ const listNearbyFutsals = async (req, res) => {
 
 // POST API: Add New Futsal
 const addFutsal = async (req, res) => {
-  const { name, userId, address, location, contact, opensAt, closesAt, price } =
-    req.body;
-  const file = req.file;
-  if (!file) return res.status(400).json({ message: "No File Uploaded." });
-  const fileName = file.originalname;
-  const filePath = file.path;
-  const uuid = randomUUID();
-  const imageUrl = `https://owner.bookmyfutsal.com/images/${uuid.concat(fileName)}`;
-  ftpClient.put(filePath, `/images/${uuid.concat(fileName)}`, (error) => {
-    if (error) return res.status(400).json({ message: "Photo upload failed." });
-    //Delete local file after upload
-    fs.unlink(filePath, (error) => {
-      if (error) console.error("Failed to delete local file:", error);
-    });
-  });
+  const { name, userId, address, contact } = req.body;
   try {
     const futsal = await Futsal.create({
       name,
       userId,
       address,
-      location,
       contact,
-      imageUrl,
-      price,
-      opensAt,
-      closesAt,
     });
     futsal
       ? res.status(201).json(futsal)
@@ -104,6 +85,24 @@ const addFutsal = async (req, res) => {
 const updateFutsal = async (req, res) => {
   const { id } = req.params;
   const updateFields = req.body;
+
+  const file = req.file;
+  // if (!file) return res.status(400).json({ message: "No File Uploaded." });
+  if (file){
+    const fileName = file.originalname;
+    const filePath = file.path;
+    const uuid = randomUUID();
+    const imageUrl = `https://owner.bookmyfutsal.com/images/${uuid.concat(fileName)}`;
+    ftpClient.put(filePath, `/images/${uuid.concat(fileName)}`, (error) => {
+      if (error) return res.status(400).json({ message: "Photo upload failed." });
+      //Delete local file after upload
+      fs.unlink(filePath, (error) => {
+        if (error) console.error("Failed to delete local file:", error);
+      });
+    });
+    updateFields.imageUrl = imageUrl
+  }
+  updateFields.isOnboarded = true
   try {
     const updatedFutsal = await Futsal.findByIdAndUpdate(
       id,
@@ -111,7 +110,7 @@ const updateFutsal = async (req, res) => {
       { new: true }
     );
     if (!updatedFutsal)
-      return res.status(401).json({ message: "Could not update futsal" });
+      return res.status(401).json({ message: "Futsal profile does not exist." });
     res.status(200).json(updatedFutsal);
   } catch (error) {
     res.status(400).json({ message: error.message });
