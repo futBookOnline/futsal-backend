@@ -102,6 +102,7 @@ const updateFutsal = async (req, res) => {
     });
     updateFields.imageUrl = imageUrl
   }
+  updateFields.isOnboarded = true
   try {
     const updatedFutsal = await Futsal.findByIdAndUpdate(
       id,

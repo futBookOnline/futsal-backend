@@ -44,7 +44,7 @@ const emailExists = async (req, res) => {
       ? res.status(200).json(futsalOwner)
       : res.status(403).json({ message: "Email not found" });
   } catch (error) {
-    res.status(400).json({message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 // Login Futsal Owner
@@ -55,7 +55,11 @@ const loginFutsalOwner = async (req, res) => {
     if (futsalOwner) {
       const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
       if (!futsalExists)
-        return res.status(300).json({ message: "create futsal profile" });
+        return res.status(300).json({ message: "Create futsal profile" });
+      if (!futsalExists.isOnboarded)
+        return res
+          .status(403)
+          .json({ message: "User is not onboarded" });
       const { password: hashedPassword, ...rest } = futsalOwner._doc;
       const token = createToken(futsalOwner._id);
       const maxAge = 3 * 24 * 60 * 60;
@@ -63,7 +67,7 @@ const loginFutsalOwner = async (req, res) => {
         .cookie("jwt_login_owner", token, {
           httpOnly: true,
           secure: true,
-          sameSite: 'none',
+          sameSite: "none",
           partitioned: true,
           maxAge: maxAge * 1000,
         })
@@ -71,7 +75,7 @@ const loginFutsalOwner = async (req, res) => {
         .json(rest);
     }
   } catch (error) {
-    res.status(400).json({message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -147,7 +151,7 @@ const resetPassword = async (req, res) => {
       { new: true }
     );
     const { password: hashedPass, ...rest } = updateUser._doc;
-    res.status(200).json( rest);
+    res.status(200).json(rest);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

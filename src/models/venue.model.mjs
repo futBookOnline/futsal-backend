@@ -22,6 +22,14 @@ const futsalSchema = mongoose.Schema(
       // OR
       // type: Object
     },
+    contact: {
+      type: Number,
+      // required: [true, "Contact is required."],
+    },
+    isOnboarded:{
+      type: Boolean,
+      default: false
+    },
     location: {
       type: { type: String, default: "Point" },
       coordinates: {
@@ -30,10 +38,7 @@ const futsalSchema = mongoose.Schema(
       },
     },
 
-    contact: {
-      type: Number,
-      // required: [true, "Contact is required."],
-    },
+    
     imageUrl: {
       type: String,
       default:
