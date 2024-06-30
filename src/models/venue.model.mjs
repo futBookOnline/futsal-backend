@@ -15,10 +15,6 @@ const futsalSchema = mongoose.Schema(
         type: String,
         // required: [true, "Street address is required."],
       },
-      // municipality: {
-      //   type: String,
-      //   required: [true, "Municipality name is required."],
-      // },
       district: {
         type: String,
         // required: [true, "District name is required."],
@@ -59,9 +55,19 @@ const futsalSchema = mongoose.Schema(
         type: Number,
       },
     },
-    price: {
-      type: String,
-    },
+    priceList: [
+      {
+        price: {
+          type: Number,
+        },
+        startingTime: {
+          type: String,
+        },
+        endingTime: {
+          type: String,
+        }
+      }
+    ],
   },
   { timestamps: true }
 );

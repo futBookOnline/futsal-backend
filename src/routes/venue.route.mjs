@@ -15,8 +15,8 @@ import { multerUpload } from "../utils/uploadPhoto.utils.mjs";
 router.get("/", listPaginatedFutsals);
 router.get("/location", listNearbyFutsals);
 router.get("/:id", getFutsal);
-router.post("/add", multerUpload.single("file"), addFutsal);
-router.put("/update/:id", updateFutsal)
+router.post("/add",  addFutsal);
+router.put("/update/:id", multerUpload.single("file"), updateFutsal)
 router.put("/upload-image", updateProfileImage)
 
 export default router;
