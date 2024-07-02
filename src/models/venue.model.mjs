@@ -60,19 +60,9 @@ const futsalSchema = mongoose.Schema(
         type: Number,
       },
     },
-    priceList: [
-      {
-        price: {
-          type: Number,
-        },
-        startingTime: {
-          type: String,
-        },
-        endingTime: {
-          type: String,
-        }
-      }
-    ],
+    priceList: {
+      type: String
+    }
   },
   { timestamps: true }
 );
