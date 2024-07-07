@@ -8,6 +8,7 @@ import {
   activateEmail,
   deleteFutsalOwner,
   logoutFutsalOwner,
+  updateOnboardStatus,
   changePassword,
   resetPassword
 } from "../controllers/owner.controller.mjs";
@@ -20,7 +21,8 @@ router.post("/login", loginFutsalOwner);
 router.put("/activate/:id", activateEmail);
 router.delete("/delete/:id", deleteFutsalOwner);
 router.get("/logout", logoutFutsalOwner);
-router.put("/change-password", changePassword)
-router.put("/reset-password", resetPassword)
+router.put("/onboard/:id", updateOnboardStatus);
+router.put("/change-password/:id", changePassword)
+router.put("/reset-password/:id", resetPassword)
 
 export default router;
