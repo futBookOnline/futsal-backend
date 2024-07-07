@@ -53,15 +53,16 @@ const loginFutsalOwner = async (req, res) => {
   try {
     const futsalOwner = await FutsalOwner.login(email, password);
     if (futsalOwner) {
-      const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
-      if (!futsalExists)
-        return res.status(300).json({ message: "Create futsal profile" });
+      // const futsalExists = await Futsal.findOne({ userId: futsalOwner._id });
+      // if (!futsalExists)
+      //   return res.status(300).json({ message: "Create futsal profile" });
+      // const { password: hashedPassword, ...rest } = futsalOwner._doc;
+      // if (!futsalExists.isOnboarded)
+      //   return res
+      //     .status(403)
+      //     .json({ user: rest, message: "User is not onboarded" });
       const { password: hashedPassword, ...rest } = futsalOwner._doc;
-      if (!futsalExists.isOnboarded)
-        return res
-          .status(403)
-          .json({ user: rest, message: "User is not onboarded" });
-
+      if (!futsalOwner.isOnboarded) return res.status(200).json(rest)
       const token = createToken(futsalOwner._id);
       const maxAge = 3 * 24 * 60 * 60;
       res
