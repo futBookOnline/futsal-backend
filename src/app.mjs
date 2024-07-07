@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser())
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: [process.env.CLIENT_OWNER_URL, process.env.CLIENT_USER_URL, process.env.CLIENT_DEVELOPMENT_URL],
   credentials: true
 }));
 
