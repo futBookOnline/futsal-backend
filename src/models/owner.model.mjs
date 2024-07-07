@@ -21,6 +21,10 @@ const futsalOwnerSchema = mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    isOnboarded: {
+      type: Boolean,
+      default: false
+    },
     lastLoggedIn: {
       type: Date,
       default: new Date().toString(),
