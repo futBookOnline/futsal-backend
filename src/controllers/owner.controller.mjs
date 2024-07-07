@@ -200,7 +200,7 @@ export {
   listFutsalOwners,
   addFutsalOwner,
   emailExists,
-  updateFutsalOwner,
+  updateOnboardStatus,
   loginFutsalOwner,
   activateEmail,
   deleteFutsalOwner,
