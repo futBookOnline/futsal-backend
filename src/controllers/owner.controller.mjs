@@ -41,8 +41,8 @@ const emailExists = async (req, res) => {
       "-password"
     );
     futsalOwner
-      ? res.status(200).json(futsalOwner)
-      : res.status(403).json({ message: "Email not found" });
+      ? res.status(400).json(futsalOwner, { message: "Email already used" })
+      : res.status(200).json({ message: "Email not found" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
