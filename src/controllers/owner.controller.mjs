@@ -61,7 +61,7 @@ const loginFutsalOwner = async (req, res) => {
         return res
           .status(403)
           .json({ user: rest, message: "User is not onboarded" });
-      
+
       const token = createToken(futsalOwner._id);
       const maxAge = 3 * 24 * 60 * 60;
       res
@@ -75,6 +75,23 @@ const loginFutsalOwner = async (req, res) => {
         .status(200)
         .json(rest);
     }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Update Futsal Onboard Owner
+const updateOnboardStatus = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const futsalOwner = await FutsalOwner.findByIdAndUpdate(
+      id,
+      { isOnboarded: true },
+      { new: true }
+    );
+    return futsalOwner
+      ? res.status(201).json(futsalOwner)
+      : res.status(404).json({ message: "Futsal owner does not exist." });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -183,6 +200,7 @@ export {
   listFutsalOwners,
   addFutsalOwner,
   emailExists,
+  updateFutsalOwner,
   loginFutsalOwner,
   activateEmail,
   deleteFutsalOwner,
