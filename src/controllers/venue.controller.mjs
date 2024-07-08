@@ -81,6 +81,17 @@ const addFutsal = async (req, res) => {
   }
 };
 
+// Get Venue Id by User Id
+const getVenueByUserId = async (req, res) => {
+  const {id} = req.params
+  try {
+    const venue = await Futsal.findById(id)
+    return venue ? res.status(200).json(venue) : res.status(404).json({message: "Venue profile deos not exist."})
+  } catch (error) {
+    res.status(400).json({message: error.message})
+  }
+}
+
 // Update Futsal Profile
 const updateFutsal = async (req, res) => {
   const { id } = req.params;
@@ -140,6 +151,7 @@ export {
   addFutsal,
   listNearbyFutsals,
   listPaginatedFutsals,
+  getVenueByUserId,
   updateFutsal,
   updateProfileImage,
 };
