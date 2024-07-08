@@ -83,9 +83,9 @@ const addFutsal = async (req, res) => {
 
 // Get Venue Id by User Id
 const getVenueByUserId = async (req, res) => {
-  const {id} = req.params
+  const userId = req.params.id
   try {
-    const venue = await Futsal.findById(id)
+    const venue = await Futsal.find({userId})
     return venue ? res.status(200).json(venue) : res.status(404).json({message: "Venue profile deos not exist."})
   } catch (error) {
     res.status(400).json({message: error.message})
