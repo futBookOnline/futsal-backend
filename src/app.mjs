@@ -27,6 +27,9 @@ app.use(
       process.env.CLIENT_OWNER_URL,
       process.env.CLIENT_USER_URL,
       process.env.CLIENT_DEVELOPMENT_URL,
+      process.env.VERCEL_CLIENT_USER_URL,
+      process.env.NETLIFY_CLIENT_USER_URL,
+      process.env.NETLIFY_CLIENT_OWNER_URL,
     ],
     credentials: true,
   })
