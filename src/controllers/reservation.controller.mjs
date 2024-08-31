@@ -1,4 +1,5 @@
 import FutsalReservation from "../models/reservation.model.mjs";
+import { getIoInstance } from "../sockets/socket.handler.mjs";
 
 // GET API: List all reservations
 const listReservations = async (req, res) => {
@@ -93,9 +94,9 @@ const addReservation = async (req, res) => {
   const reservationObject = req.body;
   try {
     const reservation = await FutsalReservation.create(reservationObject);
-    reservation
-      ? res.status(201).json(reservation)
-      : res.status(401).json({ message: "Reservation failed" });
+    if(!reservation) return res.status(401).json({ message: "Reservation failed" });
+    getIoInstance().emit("new-reservation", reservation)
+    res.status(201).json(reservation)
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
