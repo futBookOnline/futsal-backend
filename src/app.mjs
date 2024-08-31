@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import http from "http";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -10,12 +11,17 @@ import futsalOwnerRoute from "./routes/owner.route.mjs";
 import googleAuthRoute from "./routes/google.auth.route.mjs";
 import reservationRoute from "./routes/reservation.route.mjs";
 import mailerRoute from "./routes/mailer.route.mjs";
+import { setupWebSocket } from "./sockets/socket.handler.mjs";
 
 const app = express();
+const server = http.createServer(app);
 const port = process.env.PORT || 3000;
 const hostname = "http://localhost:";
 
 const mongoUrl = process.env.MONGODB_URI;
+
+// Web Socket
+setupWebSocket(server);
 
 // Middleware
 app.use(express.json());
