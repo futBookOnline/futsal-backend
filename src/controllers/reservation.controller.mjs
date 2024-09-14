@@ -19,32 +19,28 @@ const getReservation = async (req, res) => {
   try {
     const reservation = await FutsalReservation.findById(id);
     reservation
-      ? res.status(200).json(reservation )
+      ? res.status(200).json(reservation)
       : res.status(404).json({ message: "Reservation not found" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// GET API: Find All Reservations by Year
+// GET API: Find All Reservations by Date
 const getReservationByDate = async (req, res) => {
-  const { year, month, day } = req.query;
-  let query = {};
-  if (year) {
-    query = { "reservationDate.year": year };
-    if (month) {
-      query = { "reservationDate.year": year, "reservationDate.month": month };
-      if (day) {
-        query = {
-          "reservationDate.year": year,
-          "reservationDate.month": month,
-          "reservationDate.day": day,
-        };
-      }
-    }
+  const { queryStartDate, queryEndDate } = req.query;
+  const startDate = new Date(queryStartDate);
+  let endDate = new Date(startDate);
+  if (queryEndDate) {
+    endDate = new Date(queryEndDate);
   }
   try {
-    const reservations = await FutsalReservation.find(query);
+    const reservations = await FutsalReservation.find({
+      reservationDate: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
     reservations.length > 0
       ? res.status(200).json(reservations)
       : res.status(404).json({ message: "Match not found" });
@@ -53,36 +49,39 @@ const getReservationByDate = async (req, res) => {
   }
 };
 
-// GET API: Get All Reservation by venue
+// GET API: Get All Reservations by venue, reservation start date and reservation end date
 const getReservationByVenueId = async (req, res) => {
-  const { venueId, year, month, day } = req.query;
+  const { venueId, queryStartDate, queryEndDate } = req.query;
   let query = {};
+  let startDate = new Date();
+  let endDate = new Date();
   if (venueId) {
     query = { venueId };
-    if (year) {
-      query = { venueId, "reservationDate.year": year };
-      if (month) {
+    if (queryStartDate) {
+      startDate = new Date(queryStartDate);
+      query = {
+        venueId,
+        reservationDate: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      };
+      if (queryEndDate) {
+        endDate = new Date(queryEndDate);
         query = {
           venueId,
-          "reservationDate.year": year,
-          "reservationDate.month": month,
+          reservationDate: {
+            $gte: startDate,
+            $lte: endDate,
+          },
         };
-        if (day) {
-          query = {
-            venueId,
-            "reservationDate.year": year,
-            "reservationDate.month": month,
-            "reservationDate.day": day,
-          };
-        }
       }
     }
   }
   try {
     const reservations = await FutsalReservation.find(query);
-    console.log("RESERVATIONS: ", reservations);
     reservations.length > 0
-      ? res.status(200).json( reservations )
+      ? res.status(200).json(reservations)
       : res.status(404).json({ message: "Match not found" });
   } catch (error) {
     res.status(400).json({ message: "Something went wrong" });
@@ -94,22 +93,47 @@ const addReservation = async (req, res) => {
   const reservationObject = req.body;
   try {
     const reservation = await FutsalReservation.create(reservationObject);
-    if(!reservation) return res.status(401).json({ message: "Reservation failed" });
-    getIoInstance().emit("new-reservation", reservation)
-    res.status(201).json(reservation)
+    if (!reservation)
+      return res.status(401).json({ message: "Reservation failed" });
+    getIoInstance().emit("reservation-added", reservation);
+    res.status(201).json(reservation);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
+// Update Registration
+const updateReservation = async(req, res) => {
+  const {id} = req.params
+  const updateFields = req.body;
+  try {
+    const reservation = await FutsalReservation.findById(id)
+    if(!reservation)
+      return res.status(401).json({ message: "Reservation does not exist." });
+    //need to check date and time and allow time update upto 30 minutes prior to reservation time only.
+    const updatedReservation = await FutsalReservation.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true }
+    );
+    if (!updatedReservation)
+      return res.status(401).json({ message: "Reservation update failed." });
+    getIoInstance().emit("reservation-updated", updatedReservation);
+    res.status(200).json(updatedReservation);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
 
 // Cancel Reservation
 const cancelReservation = async (req, res) => {
   const { id } = req.params;
   try {
     const reservation = await FutsalReservation.findByIdAndDelete(id);
-    reservation
-      ? res.status(200).json(reservation)
-      : res.status(301).json({ message: "Failed cancelling reservation" });
+    if(!reservation)
+      res.status(301).json({ message: "Failed cancelling reservation" });
+    getIoInstance().emit("reservation-cancelled", reservation);
+    res.status(200).json(reservation)
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -121,5 +145,6 @@ export {
   getReservationByDate,
   getReservationByVenueId,
   addReservation,
+  updateReservation,
   cancelReservation,
 };
