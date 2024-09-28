@@ -44,21 +44,27 @@ const futsalSchema = mongoose.Schema(
       default:
         "https://firebasestorage.googleapis.com/v0/b/futsal-management-cfe31.appspot.com/o/Assets%2Fa.png?alt=media&token=b7a82288-e014-4a12-872c-1967c994e732",
     },
+    // opensAt: {
+    //   hour: {
+    //     type: Number,
+    //   },
+    //   minute: {
+    //     type: Number,
+    //   },
+    // },
+    // closesAt: {
+    //   hour: {
+    //     type: Number,
+    //   },
+    //   minute: {
+    //     type: Number,
+    //   },
+    // },
     opensAt: {
-      hour: {
-        type: Number,
-      },
-      minute: {
-        type: Number,
-      },
+      type: String
     },
     closesAt: {
-      hour: {
-        type: Number,
-      },
-      minute: {
-        type: Number,
-      },
+      type: String
     },
     priceList: {
       type: String
