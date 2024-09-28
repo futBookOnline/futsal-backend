@@ -18,6 +18,19 @@ const listFutsalOwners = async (req, res) => {
   }
 };
 
+// GET API: Get Futsal Owner By Id
+const getFutsalOwner = async (req, res) => {
+  const {id} = req.params
+  try {
+    const futsalOwner = await FutsalOwner.findById(id).select("-password");
+    futsalOwner
+      ? res.status(200).json(futsalOwner)
+      : res.status(404).json({ message: "Empty Futsal Owners List" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 // Add New Futsal Owner
 const addFutsalOwner = async (req, res) => {
   const { email, password } = req.body;
@@ -199,6 +212,7 @@ const logoutFutsalOwner = async (req, res) => {
 
 export {
   listFutsalOwners,
+  getFutsalOwner,
   addFutsalOwner,
   emailExists,
   updateOnboardStatus,

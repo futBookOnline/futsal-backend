@@ -1,5 +1,6 @@
 import FutsalReservation from "../models/reservation.model.mjs";
 import { getIoInstance } from "../sockets/socket.handler.mjs";
+import { adjustDateToNepalTimezone } from "../utils/helper.utils.mjs";
 
 // GET API: List all reservations
 const listReservations = async (req, res) => {
@@ -51,7 +52,7 @@ const getReservationByDate = async (req, res) => {
 
 // GET API: Get All Reservations by venue, reservation start date and reservation end date
 const getReservationByVenueId = async (req, res) => {
-  const { venueId, queryStartDate, queryEndDate } = req.query;
+  const { venueId, queryStartDate, queryEndDate } = req.params;
   let query = {};
   let startDate = new Date();
   let endDate = new Date();
@@ -88,9 +89,49 @@ const getReservationByVenueId = async (req, res) => {
   }
 };
 
+
+// POST API: Get All Reservations by slot, reservation start date and reservation end date
+const getReservationBySlotId = async (req, res) => {
+  let  { slotIds, queryStartDate, queryEndDate } = req.body;
+  let query = {};
+  if (slotIds) {
+    query = { slotId: {$in: slotIds} };
+    if (queryStartDate) {
+      const startDate = adjustDateToNepalTimezone(queryStartDate);
+      query = {
+        slotIds,
+        reservationDate: {
+          $gte: startDate,
+          $lte: startDate,
+        },
+      };
+      if (queryEndDate) {
+        const endDate = adjustDateToNepalTimezone(queryEndDate);
+        query = {
+          slotIds,
+          reservationDate: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        };
+      }
+    }
+  }
+ 
+  try {
+    const reservations = await FutsalReservation.find(query);
+    reservations.length > 0
+      ? res.status(200).json(reservations)
+      : res.status(404).json({ message: "Reservation not found" });
+  } catch (error) {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+};
+
 // POST API: Add new reservation
 const addReservation = async (req, res) => {
   const reservationObject = req.body;
+  console.log("FORM DATA: ", reservationObject)
   try {
     const reservation = await FutsalReservation.create(reservationObject);
     if (!reservation)
@@ -125,7 +166,7 @@ const updateReservation = async(req, res) => {
   }
 }
 
-// Cancel Reservation
+// Cancel Reservation By Id
 const cancelReservation = async (req, res) => {
   const { id } = req.params;
   try {
@@ -139,12 +180,24 @@ const cancelReservation = async (req, res) => {
   }
 };
 
+// Remove All Reservations
+const deleteAllReservations = async (req, res) => {
+  try {
+    const result = await FutsalReservation.deleteMany({}); // Empty filter to delete all documents
+    res.status(200).json({ message: `${result.deletedCount} reservations deleted successfully` });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export {
   listReservations,
   getReservation,
   getReservationByDate,
   getReservationByVenueId,
+  getReservationBySlotId,
   addReservation,
   updateReservation,
   cancelReservation,
+  deleteAllReservations
 };

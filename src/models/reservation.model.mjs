@@ -4,9 +4,8 @@ const { isEmail } = pkg;
 
 const reservationSchema = mongoose.Schema(
   {
-    venueId: {
+    slotId: {
       type: String,
-      required: [true, "Futsal Id is required"],
     },
     userId: {
       type: String,
