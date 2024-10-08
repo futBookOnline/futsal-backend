@@ -72,13 +72,13 @@ futsalUserSchema.statics.login = async function (email, password) {
   if (!email) throw Error("Email cannot be empty");
   if (!password) throw Error("Password cannot be empty");
   const user = await this.findOne({ email });
-  if (user.isGoogleUser) throw Error("Continue with google sign in");
   if (!user) {
     throw Error("Email does not exist");
   }
   if (!user.isActive) {
     throw Error("Email is not active.");
   }
+  if (user.isGoogleUser) throw Error("Continue with google sign in");
   const auth = await comparePassword(password, user.password);
   if (auth) {
     return user;

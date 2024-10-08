@@ -1,6 +1,4 @@
 import Holiday from "../models/holiday.model.mjs";
-import { adjustDateToNepalTimezone } from "../utils/helper.utils.mjs";
-
 // GET API: Fetch All Holidays
 const listHolidays = async (req, res) => {
   try {

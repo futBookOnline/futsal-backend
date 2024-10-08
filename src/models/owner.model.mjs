@@ -37,6 +37,8 @@ const futsalOwnerSchema = mongoose.Schema(
 
 // Login Static Method
 futsalOwnerSchema.statics.login = async function (email, password) {
+  if (!email) throw Error("Email cannot be empty");
+  if (!password) throw Error("Password cannot be empty");
   const futsalOwner = await this.findOne({ email });
   if (!futsalOwner) throw Error("Email does not exist");
   if (!futsalOwner.isActive) throw Error("Email is inactive");

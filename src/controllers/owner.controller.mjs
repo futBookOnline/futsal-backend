@@ -1,5 +1,4 @@
 import FutsalOwner from "../models/owner.model.mjs";
-import Futsal from "../models/venue.model.mjs";
 import {
   comparePassword,
   createToken,

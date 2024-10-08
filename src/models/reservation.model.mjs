@@ -1,15 +1,11 @@
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 import pkg from "validator";
 const { isEmail } = pkg;
 
 const reservationSchema = mongoose.Schema(
   {
-    slotId: {
-      type: String,
-    },
-    userId: {
-      type: String,
-    },
+    slotId: { type: mongoose.Schema.Types.ObjectId, ref: "Slot" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "FutsalUser" },
     guestUser: {
       fullName: {
         type: String,
@@ -22,16 +18,15 @@ const reservationSchema = mongoose.Schema(
         lowercase: true,
         validate: [isEmail, "Please enter valid email."],
       },
-
     },
-    reservationDate: {
-        type: Date,
-        required: [true, "Reservation date is required."],
-    },
-    reservationTime: {
-      type: String,
-      requried: [true, "Reservation time is required"]
-    },
+    // reservationDate: {
+    //     type: Date,
+    //     required: [true, "Reservation date is required."],
+    // },
+    // reservationTime: {
+    //   type: String,
+    //   requried: [true, "Reservation time is required"]
+    // },
   },
   {
     timestamps: true,

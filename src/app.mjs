@@ -12,7 +12,10 @@ import googleAuthRoute from "./routes/google.auth.route.mjs";
 import reservationRoute from "./routes/reservation.route.mjs";
 import mailerRoute from "./routes/mailer.route.mjs";
 import holidayRoute from "./routes/holiday.route.mjs"
+import futsalHolidayRoute from "./routes/futsal.holiday.route.mjs"
 import slotRoute from "./routes/slot.route.mjs"
+import helperRoute from "./routes/helper.route.mjs"
+import futsalCustomerRoute from "./routes/futsal.customer.route.mjs"
 import { setupWebSocket } from "./sockets/socket.handler.mjs";
 
 const app = express();
@@ -64,4 +67,7 @@ app.use("/auth/google", googleAuthRoute);
 app.use("/reservations", reservationRoute);
 app.use("/email", mailerRoute);
 app.use("/holidays", holidayRoute);
+app.use("/futsal-holidays", futsalHolidayRoute)
 app.use("/slots", slotRoute);
+app.use("/helpers", helperRoute)
+app.use("/customers", futsalCustomerRoute)

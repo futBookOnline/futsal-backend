@@ -6,10 +6,7 @@ const futsalSchema = mongoose.Schema(
       type: String,
       required: [true, "Full Name is required."],
     },
-    userId: {
-      type: String,
-      // required: [true, "User Id is required."],
-    },
+    userId:{ type: mongoose.Schema.Types.ObjectId, ref: 'FutsalOwner' },
     address: {
       street: {
         type: String,
@@ -26,10 +23,10 @@ const futsalSchema = mongoose.Schema(
       type: Number,
       // required: [true, "Contact is required."],
     },
-    isOnboarded:{
-      type: Boolean,
-      default: false
-    },
+    // isOnboarded:{
+    //   type: Boolean,
+    //   default: false
+    // },
     location: {
       type: { type: String, default: "Point" },
       coordinates: {
@@ -38,7 +35,15 @@ const futsalSchema = mongoose.Schema(
       },
     },
 
-    
+    opensAt: {
+      type: String
+    },
+    closesAt: {
+      type: String
+    },
+    priceList: {
+      type: String
+    },
     imageUrl: {
       type: String,
       default:
@@ -60,15 +65,7 @@ const futsalSchema = mongoose.Schema(
     //     type: Number,
     //   },
     // },
-    opensAt: {
-      type: String
-    },
-    closesAt: {
-      type: String
-    },
-    priceList: {
-      type: String
-    }
+    
   },
   { timestamps: true }
 );

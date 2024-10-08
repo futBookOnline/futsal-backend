@@ -2,6 +2,7 @@ import moment from "moment";
 import Slot from "../models/slot.model.mjs";
 import { adjustDateToNepalTimezone } from "./helper.utils.mjs";
 import Holiday from "../models/holiday.model.mjs";
+import FutsalHoliday from "../models/futsal.holiday.model.mjs";
 
 export const generateSlots = async (venue, date) => {
   const openingTime = moment(date).set({
@@ -34,7 +35,7 @@ export const generateSlots = async (venue, date) => {
     }
 
     // Check if the date is a weekend or holiday, and adjust pricing accordingly
-    const isHolidayToday = await isHoliday(date);
+    const isHolidayToday = await isHoliday(venue._id, date);
     const isWeekendToday = await isWeekend(date);
     if (isWeekendToday || isHolidayToday) {
       basePrice = 1200
@@ -81,9 +82,18 @@ const isWeekend = async (date) => {
   return day === 0 || day === 6; // 0 = Sunday, 6 = Saturday
 };
 
-const isHoliday = async (date) => {
+// const isHoliday = async (date) => {
+//   // const holidays = ["2024-01-01", "2024-10-03"]; // New Year, Christmas, etc.
+//   const holidays = await Holiday.find();
+//   const holidaysDate = holidays.map(holiday => holiday.date)
+//   const formattedDate = moment(date).format("YYYY-MM-DD");
+//   return holidaysDate.includes(formattedDate);
+// };
+
+
+const isHoliday = async (venueId, date) => {
   // const holidays = ["2024-01-01", "2024-10-03"]; // New Year, Christmas, etc.
-  const holidays = await Holiday.find();
+  const holidays = await FutsalHoliday.find({venueId});
   const holidaysDate = holidays.map(holiday => holiday.date)
   const formattedDate = moment(date).format("YYYY-MM-DD");
   return holidaysDate.includes(formattedDate);
