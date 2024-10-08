@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 const slotSchema = mongoose.Schema(
     {
-        venueId: {
-            type: String,
-          },
+        venueId: 
+          { type: mongoose.Schema.Types.ObjectId, ref: 'FutsalVenue' },
           startTime: {
             type: String, // Time format (e.g., '08:00')
           },

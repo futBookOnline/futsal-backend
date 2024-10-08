@@ -15,7 +15,8 @@ import {
 } from "../controllers/owner.controller.mjs";
 import { verifyToken } from "../middleware/auth.middleware.mjs";
 
-router.get("/", verifyToken, listFutsalOwners);
+// router.get("/", verifyToken, listFutsalOwners);
+router.get("/", listFutsalOwners);
 router.get("/logout", logoutFutsalOwner);
 router.get("/:id", getFutsalOwner);
 router.post("/emailExists", emailExists)

@@ -6,7 +6,14 @@ import { adjustDateToNepalTimezone } from "../utils/helper.utils.mjs";
 // GET API: Fetch All Slots
 const listSlots = async (req, res) => {
   try {
-    const slots = await Slot.find();
+    const slots = await Slot.find().populate({
+      path: 'venueId',
+      populate: {
+        path: 'userId',
+        select: '-password'
+      }
+    }) ;
+    // const slots = await Slot.find().select("_id")
     slots.length < 1
       ? res.status(404).json({ message: "There are no slots." })
       : res.status(200).json(slots);
@@ -19,7 +26,13 @@ const listSlots = async (req, res) => {
 const getSlotBySlotId = async (req, res) => {
   const { id } = req.params;
   try {
-    const slot = await Slot.findById(id);
+    const slot = await Slot.findById(id).populate({
+      path: 'venueId',
+      populate: {
+        path: 'userId',
+         select: '-password'
+      }
+    });
     slot
       ? res.status(200).json(slot)
       : res.status(404).json({ message: `No slot for ${id}` });
@@ -56,7 +69,13 @@ const listSlotsByVenue = async (req, res) => {
     }
   }
   try {
-    const slots = await Slot.find(query);
+    const slots = await Slot.find(query).populate({
+      path: 'venueId',
+      populate: {
+        path: 'userId',
+        select: '-password'
+      }
+    });
     slots.length < 1
       ? res.status(404).json({ message: "There are no slots." })
       : res.status(200).json(slots);
@@ -106,13 +125,19 @@ const updateSlot = async (req, res) => {
   const { id } = req.params;
   const updateFields = req.body;
   try {
-    const slot = await Slot.findById(id);
+    const slot = await Slot.findById(id)
     if (!slot) return res.status(401).json({ message: "SLot does not exist." });
     const updatedSlot = await Slot.findByIdAndUpdate(
       id,
       { $set: updateFields },
       { new: true }
-    );
+    ).populate({
+      path: 'venueId',
+      populate: {
+        path: 'userId',
+        select: '-password'
+      }
+    });
     if (!updatedSlot)
       return res.status(401).json({ message: "Slot update failed." });
     res.status(200).json(updatedSlot);
@@ -136,31 +161,34 @@ const deleteSlot = async (req, res) => {
 // DELETE API: Delete Multiple Slots By Venue
 const deleteMultipleSlotsByVenue = async (req, res) => {
   const { venueId, queryStartDate, queryEndDate } = req.query; // Assuming `venueId` is passed in the request body
-  if (!venueId) {
-    return res.status(400).json({ error: "Venue ID is required" });
-  }
+  // if (!venueId) {
+  //   return res.status(400).json({ error: "Venue ID is required" });
+  // }
   let query = {};
-  query = { venueId };
-  if (queryStartDate) {
-    const startDate = adjustDateToNepalTimezone(queryStartDate);
-    query = {
-      venueId,
-      date: {
-        $gte: startDate,
-        $lte: startDate,
-      },
-    };
-    if (queryEndDate) {
-      const endDate = adjustDateToNepalTimezone(queryEndDate);
+  if(venueId){
+    query = { venueId };
+    if (queryStartDate) {
+      const startDate = adjustDateToNepalTimezone(queryStartDate);
       query = {
         venueId,
         date: {
           $gte: startDate,
-          $lte: endDate,
+          $lte: startDate,
         },
       };
+      if (queryEndDate) {
+        const endDate = adjustDateToNepalTimezone(queryEndDate);
+        query = {
+          venueId,
+          date: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        };
+      }
     }
   }
+  
   try {
     const result = await Slot.deleteMany(query);
     if (result.deletedCount === 0) {
