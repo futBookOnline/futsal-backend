@@ -56,6 +56,7 @@ const getReservation = async (req, res) => {
   }
 };
 
+// THIS MIGHT NOT BE USEFUL ANYMORE
 // GET API: Find All Reservations by Date
 const getReservationByDate = async (req, res) => {
   const { queryStartDate, queryEndDate } = req.query;
@@ -148,12 +149,11 @@ const getReservationByVenueAndDistinctUser = async (req, res) => {
   const { venueId } = req.params;
   console.log("VENUE ID: ", venueId);
   try {
-    // const reservations = await FutsalReservation.Distinct("userId._id", {
-    //   'userId._id': userId,
-    // })
-    const reservations = await FutsalReservation.distinct("userId", {
-      "slotId.venueId": venueId,
-    });
+    const reservations = await FutsalReservation.find({}).populate({
+      path: "slotId",
+      match: { venueId: venueId },
+    }).distinct("userId");
+    
     reservations.length > 0
       ? res.status(200).json(reservations)
       : res.status(404).json({ message: "Match not found" });
@@ -229,6 +229,7 @@ const addReservation = async (req, res) => {
           reservation.slotId.venueId,
           reservationObject.guestUser
         );
+    console.log("Emitting reservation-added event with data:", reservation);
     getIoInstance().emit("reservation-added", reservation);
     res.status(201).json(reservation);
   } catch (error) {

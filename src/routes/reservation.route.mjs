@@ -16,7 +16,7 @@ const router = express.Router();
 router.get("/", listReservations);
 router.get("/date", getReservationByDate);
 router.get("/venue", getReservationByVenueId);
-router.get("/venue/distinct-user/:userId", getReservationByVenueAndDistinctUser);
+router.get("/venue/distinct-user/:venueId", getReservationByVenueAndDistinctUser);
 router.post("/slot", getReservationBySlotId);
 router.get("/id/:id", getReservation);
 router.put("/update/:id", updateReservation)
