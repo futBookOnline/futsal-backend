@@ -46,8 +46,8 @@ const getFutsal = async (req, res) => {
 
 // GET API: Find Nearby Futsals
 const listNearbyFutsals = async (req, res) => {
-  const { longitude, latitude } = req.query;
-  const radiusInKiloMeters = 10;
+  const { longitude, latitude, radius } = req.query;
+  const radiusInKiloMeters = radius ? radius : 1;
   try {
     const futsals = await Futsal.find({
       location: {
@@ -123,7 +123,7 @@ const updateFutsal = async (req, res) => {
       id,
       { $set: updateFields },
       { new: true }
-    ).populate('userId');
+    ).populate("userId");
     if (!updatedFutsal)
       return res
         .status(401)
@@ -138,7 +138,7 @@ const updateFutsal = async (req, res) => {
         return res.status(404).json({ error: "Owner not found" });
       }
     }
-    updatedFutsal = await Futsal.findById(id).populate('userId')
+    updatedFutsal = await Futsal.findById(id).populate("userId");
     res.status(200).json(updatedFutsal);
   } catch (error) {
     res.status(400).json({ message: error.message });

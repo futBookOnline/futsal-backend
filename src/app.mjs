@@ -16,7 +16,10 @@ import futsalHolidayRoute from "./routes/futsal.holiday.route.mjs"
 import slotRoute from "./routes/slot.route.mjs"
 import helperRoute from "./routes/helper.route.mjs"
 import futsalCustomerRoute from "./routes/futsal.customer.route.mjs"
+import contactRoute from "./routes/contact.route.mjs"
 import { setupWebSocket } from "./sockets/socket.handler.mjs";
+
+
 
 const app = express();
 const server = http.createServer(app);
@@ -46,6 +49,27 @@ app.use(
   })
 );
 
+// Routes
+app.get('/socket-io', (req, res) => {
+  res.send('Hello World!');
+});
+app.get('/hi', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.use("/users", futsalUserRoute);
+app.use("/venues", futsalRoute);
+app.use("/owners", futsalOwnerRoute);
+app.use("/auth/google", googleAuthRoute);
+app.use("/reservations", reservationRoute);
+app.use("/email", mailerRoute);
+app.use("/contact", contactRoute);
+app.use("/holidays", holidayRoute);
+app.use("/futsal-holidays", futsalHolidayRoute)
+app.use("/slots", slotRoute);
+app.use("/helpers", helperRoute)
+app.use("/customers", futsalCustomerRoute)
+
 // Database Connection
 app.listen(port, () => {
   console.log(`Server is running at ${hostname}${port}`);
@@ -59,15 +83,3 @@ app.listen(port, () => {
     });
 });
 
-// Routes
-app.use("/users", futsalUserRoute);
-app.use("/venues", futsalRoute);
-app.use("/owners", futsalOwnerRoute);
-app.use("/auth/google", googleAuthRoute);
-app.use("/reservations", reservationRoute);
-app.use("/email", mailerRoute);
-app.use("/holidays", holidayRoute);
-app.use("/futsal-holidays", futsalHolidayRoute)
-app.use("/slots", slotRoute);
-app.use("/helpers", helperRoute)
-app.use("/customers", futsalCustomerRoute)

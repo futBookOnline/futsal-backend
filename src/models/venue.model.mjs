@@ -41,9 +41,9 @@ const futsalSchema = mongoose.Schema(
     closesAt: {
       type: String
     },
-    priceList: {
-      type: String
-    },
+    // priceList: {
+    //   type: String
+    // },
     imageUrl: {
       type: String,
       default:

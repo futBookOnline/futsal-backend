@@ -1,17 +1,25 @@
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
 let io;
 export const setupWebSocket = (server) => {
   io = new Server(server, {
     cors: {
-    //   origin: 'http://localhost:5173', // Allow your frontend's origin
-    origin: [process.env.CLIENT_DEVELOPMENT_URL, process.env.CLIENT_USER_URL, process.env.CLIENT_OWNER_URL, process.env.VERCEL_CLIENT_USER_URL, process.env.NETLIFY_CLIENT_USER_URL, process.env.NETLIFY_CLIENT_OWNER_URL],
-      methods: ['GET', 'POST', 'PUT', 'DELETE']
-    }
+      // origin: [
+      //   process.env.CLIENT_DEVELOPMENT_URL,
+      //   process.env.CLIENT_USER_URL,
+      //   process.env.CLIENT_OWNER_URL,
+      //   process.env.VERCEL_CLIENT_USER_URL,
+      //   process.env.NETLIFY_CLIENT_USER_URL,
+      //   process.env.NETLIFY_CLIENT_OWNER_URL,
+      // ],
+      origin: '*',
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      credentials: true, // If using cookies with WebSockets
+    },
   });
-  io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
+  io.on("connection", (socket) => {
+    console.log("a user connected");
+    socket.on("disconnect", () => {
+      console.log("user disconnected");
     });
   });
 };
